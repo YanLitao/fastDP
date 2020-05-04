@@ -1,4 +1,9 @@
+---
+title: Differentiable Private Stochastic Gradient Descent
+---
+
 # Introduction
+
 ## Motivation and Project Statement
 Differential privacy is a framework for measuring the privacy guarantees provided by an algorithm. We can design differentially private machine learning algorithms to train on sensitive data. It provides provable guarantees of privacy (point to first image), reducing the risk of exposing sensitive training data through the learned classifier. Intuitively, for any two adjacent training sets that are only differed by one data record, the learned classifiers should not be too different. In the context of deep learning, differential private stochastic gradient descent, i.e. DPSGD, is the state-of-art algorithm to train such a privacy-preserving neural network.
 
@@ -17,3 +22,7 @@ Our data comes from American Community Survey Public Use Microdata Sample (PUMS)
 Our program separates into two stages, data preprocessing and the DPSGD training. Accordingly, the levels of parallelism we are going to implement are big data and distributed parallelization technology. To be more specific, within the data preprocessing stage, we will use Spark to process large amount of data. This is because in our pilot studies, Spark runs much faster than MapReduce. And, for DPSGD training, we will use distributed package of PyTorch with MPI backend to implement the parallelized version of the parameter update iteration, which involves gradient calculation, clipping and noise addition. 
 
 We find that there are three popular ways to implement distributed version of stochastic gradient descent: synchronous fashion, asynchronous fashion, and ring all-reduce; we plan to extend these algorithms to design distributed version of DPSGD, either centralized or decentralized. In terms of the infrastructure, since it is hard for AWS to approve our request of more than 5 g3.4xlarge instances, we currently plan to use 4 g3.4xlarge instances to run the distributed version of DPSGD, but it might change later if we are able to request more nodes. 
+
+## Table of Contents
+
+- [Main Features](http://YanLitao.github.io/fastDP/MF)
