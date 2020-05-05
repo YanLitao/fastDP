@@ -4,7 +4,7 @@ title: Differentiable Private Stochastic Gradient Descent
 
 # Introduction
 
-## Motivation and Project Statement
+## Motivation
 Differential privacy is a framework for measuring the privacy guarantees provided by an algorithm. We can design differentially private machine learning algorithms to train on sensitive data. It provides provable guarantees of privacy (point to first image), reducing the risk of exposing sensitive training data through the learned classifier. Intuitively, for any two adjacent training sets that are only differed by one data record, the learned classifiers should not be too different. In the context of deep learning, differential private stochastic gradient descent, i.e. DPSGD, is the state-of-art algorithm to train such a privacy-preserving neural network.
 
 ## The Need for Big Data and HPC
@@ -25,4 +25,9 @@ We find that there are three popular ways to implement distributed version of st
 
 ## Table of Contents
 
-- [Main Features](http://YanLitao.github.io/fastDP/MF)
+- [Parallelization Design](http://YanLitao.github.io/fastDP/Parallelization_Design)
+- [Performance Results](http://YanLitao.github.io/fastDP/Performance_Results)
+- [Discussion](http://YanLitao.github.io/fastDP/Discussion)
+- [Reproduction](http://YanLitao.github.io/fastDP/Reproduction)
+
+## References
