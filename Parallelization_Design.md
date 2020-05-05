@@ -3,21 +3,29 @@
 ### Data Description
 
 ### Sequential Version
-    * Data balancing figure
+    1. Data Balancing Figure
+
 ### Parallelization 
-    * Why choose Spark?
-    * What’s the principle of Spark’s parallelization?
+    1. Why Choose Spark?
+    
+    2. What’s the Principle of Spark’s Parallelization?
 
 ## Neural Network Model: use a big MLP
 
 ### Model Design
-    * MLP vs Conv Layer
+    1. MLP vs Conv Layer
+
 ### Parallelization 
-    * a pseudocode of parallel version of SGD
-    * Model Parallel vs Data Parallel
-    * Parameter Server vs Tree Reduction
-    * From Scratch version
-    * Distributed Data Parallel package version 
+    1. A Pseudocode of Parallel Version of SGD
+    
+    2. Model Parallel vs Data Parallel
+    
+    3. Parameter Server vs Tree Reduction
+    
+    4. From Scratch Version
+    
+    5. Distributed Data Parallel Package Version 
+
 ### Advanced features
-    * Ring All-Reduce
+    1. Ring All-Reduce
 

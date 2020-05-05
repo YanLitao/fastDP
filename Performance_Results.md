@@ -6,9 +6,10 @@
  * Results
 
 | Percentage of Full Dataset   | Sequential Time  | Spark with 1 core | Spark with 2 cores | Spark with 4 cores |
-| ---------------------------- | ---------------- | ----------------- | ------------------ | ------------------ |  
+| --------------------------   | ---------------  | ----------------- | ------------------ | ------------------ |  
 | 50%                          |                  |                   |                    |                    |
 | 100%                         |                  |                   |                    |                    |
+
  * Strong scaling, weak scaling 
 
 ### Distributed DPSGD
