@@ -8,7 +8,7 @@
 
 ## Distributed DPSGD with GPU acceleration
 
-1. Creating the Nodes
+**1. Creating the Nodes**
 
   a. login **AWS EC2** and select **Launch Instance**.
   
@@ -26,7 +26,7 @@
   
   h. Review Instance Launch - Here, review the instance then launch it. By default, this will automatically start initializing the two instances. You can monitor the initialization progress from the dashboard.
 
-2. Environment Setup
+**2. Environment Setup**
   
   a. activate the pytorch environment: `source activate pytorch_p36`;
   
@@ -40,7 +40,7 @@
   
   f. Repeat above steps on each node.
 
-3. Set up NFS
+**3. Set up NFS**
 
 Let `master$` denote master node and `$node` denote any other node.
   
