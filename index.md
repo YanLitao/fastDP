@@ -26,8 +26,8 @@ We find that there are three popular ways to implement distributed version of st
 ## Table of Contents
 
 - [Parallelization Design](http://YanLitao.github.io/fastDP/Parallelization_Design)
+- [Reproduction](http://YanLitao.github.io/fastDP/Reproduction)
 - [Performance Results](http://YanLitao.github.io/fastDP/Performance_Results)
 - [Discussion](http://YanLitao.github.io/fastDP/Discussion)
-- [Reproduction](http://YanLitao.github.io/fastDP/Reproduction)
 
 ## References
