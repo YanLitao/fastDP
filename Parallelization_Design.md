@@ -27,9 +27,9 @@ Our data comes from American Community Survey Public Use Microdata Sample (PUMS)
     2. What’s the Principle of Spark’s Parallelization? (what's the advantage of Spark over Mapreduce)
 
 
-## Neural Network Model: use a big MLP
+## Model Training
 
-### Network Design
+### Neural Network Architecture
 Since we are facing a classification problem, and we are working on a dataset with tabular format where there are no explicit correlations between columns, we choose multilayer perceptron (MLP) as our differentially private model to predict the unemployment rate. We use leakyReLU as the activation function for all but the output layer to prevent gradient vanishing. Hyperparameters such as number of layers and hidden dimensions are tuned on our dataset, with careful consideration for the tradeoff between model performance and compuational time.
 
 ### Differential Private Stochastic Gradient Descent
