@@ -1,16 +1,18 @@
-## Data and Preprocessing
-
+# Model Design
 
 Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepage.
 
 ## Table of Contents
-1. [Data Description](#data-description)
-2. [Sequential Version](#sequential-version)
-3. [Parallelization](#parallelization)
-4. [Neural Network Model: use a big MLP](#neural-network-model-use-a-big-mlp)
-5. [Network Design](#network-design)
-6. [Differential Private Stochastic Gradient Descent](#differential-private-stochastic-gradient-descent)
-7. [Parallelization Design](#parallelization-design)
+1. [Data and Preprocessing](#data-and-preprocessing)
+  * [Data Description](#data-description)
+  * [Sequential Version](#sequential-version)
+  * [Parallelization](#parallelization)
+2. [Neural Network Model: use a big MLP](#neural-network-model-use-a-big-mlp)
+  * [Network Design](#network-design)
+  * [Differential Private Stochastic Gradient Descent](#differential-private-stochastic-gradient-descent)
+  * [Parallelization Design](#parallelization-design)
+
+## Data and Preprocessing
 
 ### Data Description
 Our data comes from American Community Survey Public Use Microdata Sample (PUMS) files. It includes useful but somehow sensitive census information such as Sex, Married, College degree. Our objective is to train a deep learning model to predict the unemployment rate based on other demographic information using DPSGD and HPC and HTC tools so that we can both protect privacy and obtain a satisfiable runtime of the algorithm.
@@ -36,25 +38,36 @@ Since we are facing a classification problem, and we are working on a dataset wi
 ### Parallelization Design
 
 1. Existing parallelization method review (change a name?):   
+
     1. Model Parallel vs Data Parallel  
-    There are two approaches to parallelize the training of neural networks: *model parallelization* and *data parallelization*. Model parallel "breaks" the neural network into different parts and place different parts on different nodes. For instance, we could put the first half of the layers on one GPU, and the other half on a second one. However, this approach is rarely used in practice because of the huge communication and scheduling overhead \cite[].  
+    
+    There are two approaches to parallelize the training of neural networks: *model parallelization* and *data parallelization*. Model parallel "breaks" the neural network into different parts and place different parts on different nodes. For instance, we could put the first half of the layers on one GPU, and the other half on a second one. However, this approach is rarely used in practice because of the huge communication and scheduling overhead \cite[].
+    
     Data parallelization divides the dataset across all available computational nodes, and each process holds a copy of the current neural network, called *replica*. Each node computes gradients on its own data, and they merge the gradients to update the model parameters. Different ways of merging gradients lead to different algorithms and performance. 
     
-    3. Parameter Server vs Tree Reduction  
+    3. Parameter Server vs Tree Reduction 
+    
     There are two options to setup the architecture of the system: *parameter server* and *tree-reductions*. For the case of parameter server, one machine is responsible for holding and serving the global parameters to all replicas, which serves as a higher-level manager process. However, as discussed in \cite[], parameter servers tend to have worse scalability than tree-reduction architectures. Tree-reduction refers to the case when an infrastructure whose collective operations are executed without a higher-level manager process. The massage-passing interface (MPI) and its collective communcation operations (e.g. scatter, gather, reduce) are typical examples. 
     
 2. From Scratch Version  
+
 We directly implement synchronous distributed from scratch DPSGD through PyTorch distributed package module for multi-GPU communication. In this algorithm, all replicas average all of their gradients at every batch of data. Suppose the batch size for each replica is *B*, and the total number of replicas is *R*, then the **overall batchsize** is *BR*.
 The following pseudo-code describes synchronous distributed DPSGD at the replica-level, for *R* replicas, *T* iteration steps, and *B* individual batch size.  
+
 ![](distdpsgd.png)  
-There are two main differences compared with sequential version of DPSGD: *data partition* and *gradient AllReduce*. For data partition stage, we divide the dataset into different pieces and assign each node one of the pieces. Later in the model training stage, each node will only sample batch data from its own portion of the data. This avoids the need of communicating the split of data across each node during the training stage. During the forward and backward propagation, each GPU calculates its own loss, calcualte and process the corresponding gradient which involves clipping and noise addition. All-Reduce is a combined operation of reduce and broadcast in MPI. In the *gradient AllReduce* step, the all local gradients are averaged (reduction) and are used to update model parameters across all of the devices (broadcast).  
+
+There are two main differences compared with sequential version of DPSGD: *data partition* and *gradient AllReduce*. For data partition stage, we divide the dataset into different pieces and assign each node one of the pieces. Later in the model training stage, each node will only sample batch data from its own portion of the data. This avoids the need of communicating the split of data across each node during the training stage. During the forward and backward propagation, each GPU calculates its own loss, calcualte and process the corresponding gradient which involves clipping and noise addition. All-Reduce is a combined operation of reduce and broadcast in MPI. In the *gradient AllReduce* step, the all local gradients are averaged (reduction) and are used to update model parameters across all of the devices (broadcast). 
+
 Pytorch Distributed package is abstract and can be built on different backends. Our choice including Gloo and NCCL. However, since we are mainly working with CUDA tensors, and the collective operations for CUDA tensors provided by Gloo is not as optimized as the ones provided by the NCCL backend, we decide to use NCCL backend through out all of the experiments. 
     
 3. Distributed Data Parallel Package  
+
 Since we find From Scratch version of parallelization did not gain the speed up we expected, we decide to also implement distributed parallelization of DPSGD through PyTorch Distributed Data Parallel module. Distributed Data Parallel module is a well-tested and well-optimized version for multi-GPU distributed training. Besides that, we use PyTorch Distributed Sampler module to implement a data sampler to automatically distribute data batch instead of hand-engineer data partition. Gradient AllReduce step is also handled by Distributed Data Parallel module so we do not have to explicitly average the gradients in the training step.  
 
 4. Infrastructure Choices  
+
 AWS has been used for its flexibility to customize with different environments. Since AWS G3 instances are relatively more cost-effective than P2 type instances, we choose mostly G3 for our experiments. G3 instances are back up with NVIDIA Tesla M60 GPUs, where each GPU delivering up to 2,048 parallel processing cores and 8 GiB of GPU memory.   
+
 To save cost on storage and to prevent from downloading multiple copies of the data, we share the data folder through Network File System (NFS).
 
 
