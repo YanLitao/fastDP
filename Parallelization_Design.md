@@ -32,12 +32,18 @@ Since we are facing a classification problem, and we are working on a dataset wi
     There are two options to setup the architecture of the system: *parameter server* and *tree-reductions*. For the case of parameter server, one machine is responsible for holding and serving the global parameters to all replicas, which serves as a higher-level manager process. However, as discussed in \cite[], parameter servers tend to have worse scalability than tree-reduction architectures. Tree-reduction refers to the case when an infrastructure whose collective operations are executed without a higher-level manager process. The massage-passing interface (MPI) and its collective communcation operations (e.g. scatter, gather, reduce) are typical examples. 
     
 2. From Scratch Version  
-We directly implement synchronous distributed DPSGD through PyTorch distributed package module for multi-GPU communication.
-The following pseudo-code describes synchronous distributed DPSGD at the replica-level, for *R* replicas, *T* iteration steps, and *B* overall batch size.  
+We directly implement synchronous distributed from scratch DPSGD through PyTorch distributed package module for multi-GPU communication. In this algorithm, all replicas average all of their gradients at every batch of data. Suppose the batch size for each replica is *B*, and the total number of replicas is *R*, then the **overall batchsize** is *BR*.
+The following pseudo-code describes synchronous distributed DPSGD at the replica-level, for *R* replicas, *T* iteration steps, and *B* individual batch size.  
 (PUT A PSEUDOCODE FOR DISTRIBUTED DPSGD HERE)  
-
+There are two main differences compared with sequential version of DPSGD: *data partition* and *gradient AllReduce*. For data partition stage, we divide the dataset into different pieces and assign each node one of the pieces. Later in the model training stage, each node will only sample batch data from its own portion of the data. This avoids the need of communicating the split of data across each node during the training stage. During the forward and backward propagation, each GPU calculates its own loss, calcualte and process the corresponding gradient which involves clipping and noise addition. In the *gradient AllReduce* step, the all local gradients are averaged and being used to update models across all of the devices.  
+Pytorch Distributed package is abstract and can be built on different backends. Our choice including Gloo and NCCL. However, since we are mainly working with CUDA tensors, and the collective operations for CUDA tensors provided by Gloo is not as optimized as the ones provided by the NCCL backend, we decide to use NCCL backend through out all of the experiments. 
     
-3. Distributed Data Parallel Package 
+3. Distributed Data Parallel Package  
+Since we find From Scratch version of parallelization did not gain the speed up we expected, we decide to also implement distributed parallelization of DPSGD through PyTorch Distributed Data Parallel module. Distributed Data Parallel module is a well-tested and well-optimized version for multi-GPU distributed training. Besides that, we use PyTorch Distributed Sampler module to implement a data sampler to automatically distribute data batch instead of hand-engineer data partition. Gradient AllReduce step is also handled by Distributed Data Parallel module so we do not have to explicitly average the gradients in the training step.  
+
+4. Device Choice  
+Since this is both a GPU (computing the network weights) and CPU intensive task (loading the data), we parallelize this with multiple nodes to gain access to multiple GPUs and processors, by launching a GPU cluster on AWS. As G3 instance (8 physical CPUs) contain more processors than P2 (4 physical CPUs), we choose mostly G3 for our experiments. AWS has been used for the flexibility to customize with different setups.  
+Finally, to save cost on storage and to prevent from downloading multiple copies of the data, we share the data folder through Network File System (NFS).
 
 ### Advanced features
     1. Ring All-Reduce
