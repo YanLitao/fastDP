@@ -8,7 +8,36 @@
 
 + **1. Launch Hadoop EMR cluster**
 
-    +
+    + a. login **AWS EMR** and select **Create cluster**. You can select the following configuration:
+        ○ ClusterName: MySpark
+        ○ Launch mode “Cluster”
+        ○ Release: 5.29.0
+        ○ Applications: Spark
+        ○ Instance type: m4.xlarge
+        ○ Number of Instances: 3
+        ○ Key pair: see Guide “First Access to AWS”
+        
+    + b. Click on “Create Cluster” and wait for the cluster to be ready. The cluster is ready when its state is “Waiting” and the Master and Core under the Networks and hardware section are both in “Running” state;
+    
++ **2. Login to the cluster**
+    
+    + a. Write down the “Master public DNS” and click on the SSH link next to it. The SSH link gives you the commands you might use to login to your cluster;
+    
+    + b. SSH to the machine using the private key. A sample command is as depicted (modify accordingly). `$ ssh -i $HOME/.ssh/course-key.pem hadoop@ec2-34-229-72-173.compute-1.amazonaws.com`
+
++ **3. Submit a Spark Script** 
+    
+    + a. Upload to the master VM the Spark `process_spark.py` script and the `Ca5PUMS.csv` file;
+    
+    + b. Upload the `Ca5PUMS.csv` file to the Hadoop file system: 
+        
+        `$ hadoop fs -put Ca5PUMS.csv`
+        
++ **4. Parallel Execution on Multiple Nodes**
+
+    + a. Using the following command to execute the script on **2 executors** (worker nodes) with **4 threads per executor**, achieving the execution of **8 simultaneous tasks**:
+    
+        `$ spark-submit --num-executors 2 --executor-cores 4 process_spark.py`
 
 ## Distributed DPSGD with GPU acceleration
 
