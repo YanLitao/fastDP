@@ -41,10 +41,8 @@ Pytorch Distributed package is abstract and can be built on different backends. 
 3. Distributed Data Parallel Package  
 Since we find From Scratch version of parallelization did not gain the speed up we expected, we decide to also implement distributed parallelization of DPSGD through PyTorch Distributed Data Parallel module. Distributed Data Parallel module is a well-tested and well-optimized version for multi-GPU distributed training. Besides that, we use PyTorch Distributed Sampler module to implement a data sampler to automatically distribute data batch instead of hand-engineer data partition. Gradient AllReduce step is also handled by Distributed Data Parallel module so we do not have to explicitly average the gradients in the training step.  
 
-4. Device Choice  
-Since this is both a GPU (computing the network weights) and CPU intensive task (loading the data), we parallelize this with multiple nodes to gain access to multiple GPUs and processors, by launching a GPU cluster on AWS. As G3 instance (8 physical CPUs) contain more processors than P2 (4 physical CPUs), we choose mostly G3 for our experiments. AWS has been used for the flexibility to customize with different setups.  
-Finally, to save cost on storage and to prevent from downloading multiple copies of the data, we share the data folder through Network File System (NFS).
+4. Infrastructure Choices  
+AWS has been used for its flexibility to customize with different environments. Since AWS G3 instances are relatively more cost-effective than P2 type instances, we choose mostly G3 for our experiments. G3 instances are back up with NVIDIA Tesla M60 GPUs, where each GPU delivering up to 2,048 parallel processing cores and 8 GiB of GPU memory.   
+To save cost on storage and to prevent from downloading multiple copies of the data, we share the data folder through Network File System (NFS).
 
-### Advanced features
-    1. Ring All-Reduce
 
