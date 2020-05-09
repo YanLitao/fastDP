@@ -1,5 +1,17 @@
 ## Data and Preprocessing
 
+
+Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepage.
+
+## Table of Contents
+1. [Data Description](#data-description)
+2. [Sequential Version](#sequential-version)
+3. [Parallelization](#parallelization)
+4. [Neural Network Model: use a big MLP](#neural-network-model-use-a-big-mlp)
+5. [Network Design](#network-design)
+6. [Differential Private Stochastic Gradient Descent](#differential-private-stochastic-gradient-descent)
+7. [Parallelization Design](#parallelization-design)
+
 ### Data Description
 Our data comes from American Community Survey Public Use Microdata Sample (PUMS) files. It includes useful but somehow sensitive census information such as Sex, Married, College degree. Our objective is to train a deep learning model to predict the unemployment rate based on other demographic information using DPSGD and HPC and HTC tools so that we can both protect privacy and obtain a satisfiable runtime of the algorithm.
 
