@@ -12,15 +12,21 @@ Our data comes from American Community Survey Public Use Microdata Sample (PUMS)
     
     2. What’s the Principle of Spark’s Parallelization? (what's the advantage of Spark over Mapreduce)
 
+
 ## Neural Network Model: use a big MLP
 
-### Model Design
-    1. 
+### Network Design
+Since we are facing a classification problem, and we are working on a dataset with tabular format where there are no explicit correlations between columns, we choose multilayer perceptron (MLP) as our differentially private model to predict the unemployment rate. We use leakyReLU as the activation function for all but the output layer to prevent gradient vanishing. Hyperparameters such as number of layers and hidden dimensions are tuned on our dataset, with careful consideration for the tradeoff between model performance and compuational time.
 
-### Parallelization 
-    1. A Pseudocode of Parallel Version of SGD
-    
-    2. Model Parallel vs Data Parallel
+### Differential Private Stochastic Gradient Descent
+
+
+### Parallelization Design
+
+ 1. Existing parallelization method review (change a name?):   
+    1. Model Parallel vs Data Parallel  
+    There are two approaches to parallelize the training of neural networks: *model parallelization* and *data parallelization*. Model parallel "breaks" the neural network into different parts and place different parts on different nodes. For instance, we could put the first half of the layers on one GPU, and the other half on a second one. However, this approach is rarely used in practice because of the huge communication and scheduling overhead \cite[].  
+    Data parallelization divides the dataset across all available computational nodes, and each process holds a copy of the current neural network, called *replica*. Each node computes gradients on its own data, and they merge the gradients to update the model parameters. 
     
     3. Parameter Server vs Tree Reduction
     
