@@ -46,9 +46,9 @@
 
 + **3. Set up NFS**
 
-Let `master$` denote master node and `$node` denote any other nodes.
+    Let `master$` denote master node and `$node` denote any other nodes.
   
-Run the following commands on master node:
+    Run the following commands on master node:
   
     + a. Install NFS server: `master$ sudo apt-get install nfs-kernel-server`;
   
@@ -58,7 +58,7 @@ Run the following commands on master node:
   
     + d. Update the changes: `master$ sudo exportfs-a`;
   
-Configure the NFS client on other nodes:
+    Configure the NFS client on other nodes:
 
     + a. Install NFS client: `node$ sudo apt-get install nfs-common`;
   
