@@ -4,6 +4,51 @@
 
 ### MapReduce
 
++ **1. Launch Hadoop EMR cluster**
+
+    + a. login **AWS EMR** and select **Create cluster**. You can select the following configuration:
+    
+        ClusterName: MySpark
+        
+        Launch mode “Cluster”
+        
+        Release: 5.29.0
+        
+        Applications: Spark
+        
+        Instance type: m4.xlarge
+        
+        Number of Instances: 3
+   
+   + b. Click on “Create Cluster” and wait for the cluster to be ready. The cluster is ready when its state is “Waiting” and the Master and Core under the **Networks and hardware** section are both in “Running” state.
+   
++ **2. Submit a MapReduce job**
+
+    + a. Upload `mapper.py`, `reducer.py` and `input.py` files to a new S3 bucket. Create a S3 bucket, and name it.
+    
+    + b. Go to the Hadoop cluster dashboard’s **Steps** tab and click on “Add Step” with the following configuration:
+    
+        Step type: Streaming program
+        
+        Name: MyHadoopJob
+        
+        Mapper: Complete path to uploaded mapper
+        
+        Reducer: Complete path to uploaded reducer
+        
+        Input: Complete path to uploaded input
+        
+        Output: Complete path to new folder to be created with the output (it should not exist)
+     
+     + c. Wait for the “step” to be “completed”;
+     
+     + d. After “completed” you can check the execution time in the `controller` log file;
+     
+     + e. If the job is not successfully “completed”, you can check the logging files for further information;
+     
+     + f. Finally, check the results in the bucket, Hadoop creates one output file for each executed reducer task.
+     
+
 ### Spark
 
 + **1. Launch Hadoop EMR cluster**
