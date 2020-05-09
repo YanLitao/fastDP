@@ -1,5 +1,5 @@
 ## Goals Achieved
 
-- [Back to the top](https://yanlitao.github.io/fastDP/)
+Click <a href="https://yanlitao.github.io/fastDP">here</a> to go back to Homepage.
 
 ## Future Work
