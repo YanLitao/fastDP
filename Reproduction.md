@@ -9,13 +9,20 @@
 + **1. Launch Hadoop EMR cluster**
 
     + a. login **AWS EMR** and select **Create cluster**. You can select the following configuration:
-        ○ ClusterName: MySpark
-        ○ Launch mode “Cluster”
-        ○ Release: 5.29.0
-        ○ Applications: Spark
-        ○ Instance type: m4.xlarge
-        ○ Number of Instances: 3
-        ○ Key pair: see Guide “First Access to AWS”
+    
+        ClusterName: MySpark
+        
+        Launch mode “Cluster”
+        
+        Release: 5.29.0
+        
+        Applications: Spark
+        
+        Instance type: m4.xlarge
+        
+        Number of Instances: 3
+        
+        Key pair: see Guide “First Access to AWS”
         
     + b. Click on “Create Cluster” and wait for the cluster to be ready. The cluster is ready when its state is “Waiting” and the Master and Core under the Networks and hardware section are both in “Running” state;
     
