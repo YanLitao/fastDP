@@ -64,7 +64,28 @@ There has been quite a bit of work on parallel machine learning approaches In th
     
     ![allreduce](allreduce.png) (Figure 2 from [[Zhao, Canny]](https://arxiv.org/abs/1312.3020))
     
-In this project, we implement data parallelism with tree reduction programming model (MPI). 
+- CPU vs GPU
+
+	GPU(Graphics Processing Unit) is considered as heart of Deep Learning. While CPUs can run the operating system and perform traditional serial or multi-threading tasks, GPUs have strong vector processing capabilities that enable them to perform parallel operations on very large sets of data. GPU-accelerated computing is one kind of Heterogeneous Computing, which makes use of GPU together with a CPU to accelerate deep learning. 
+    
+In this project, we use **data parallelism** with **AllReduce appoach** and **GPU-accelerated computing** to implement distributed version of DPSGD. 
+
+
+#### Distributed Data Parallel Package  
+
+We first implement a version of distributed DPSGD using PyTorch Distributed Data Parallel module with CUDA. 
+Distributed Data Parallel module is a well-tested and well-optimized version for multi-GPU distributed training. When we wrap up our model with DistributedDataParallel, the constructor of DistributedDataParallel will register the additional gradient reduction functions on all the parameters of the model at the time of construction so that we do not need to explicitly handle gradient aggregation and parameter updates across the computational nodes during the model training.
+
+```python
+dp_device_ids = [local_rank]
+device = torch.device('cuda', local_rank)
+model = Network()
+model.to(device)
+model = torch.nn.parallel.DistributedDataParallel(model, device_ids=dp_device_ids, output_device=local_rank)
+```
+
+ Besides that, we use PyTorch Distributed Sampler module to implement a data sampler to automatically distribute data batch instead of hand-engineer data partition. 
+
     
 #### From Scratch Version  
 
@@ -76,10 +97,6 @@ The following pseudo-code describes synchronous distributed DPSGD at the replica
 There are two main differences compared with sequential version of DPSGD: *data partition* and *gradient AllReduce*. For data partition stage, we divide the dataset into different pieces and assign each node one of the pieces. Later in the model training stage, each node will only sample batch data from its own portion of the data. This avoids the need of communicating the split of data across each node during the training stage. During the forward and backward propagation, each GPU calculates its own loss, calcualte and process the corresponding gradient which involves clipping and noise addition. All-Reduce is a combined operation of reduce and broadcast in MPI. In the *gradient AllReduce* step, the all local gradients are averaged (reduction) and are used to update model parameters across all of the devices (broadcast). 
 
 Pytorch Distributed package is abstract and can be built on different backends. Our choice including Gloo and NCCL. However, since we are mainly working with CUDA tensors, and the collective operations for CUDA tensors provided by Gloo is not as optimized as the ones provided by the NCCL backend, we decide to use NCCL backend through out all of the experiments. 
-    
-#### Distributed Data Parallel Package  
-
-Since we find From Scratch version of parallelization did not gain the speed up we expected, we decide to also implement distributed parallelization of DPSGD through PyTorch Distributed Data Parallel module. Distributed Data Parallel module is a well-tested and well-optimized version for multi-GPU distributed training. Besides that, we use PyTorch Distributed Sampler module to implement a data sampler to automatically distribute data batch instead of hand-engineer data partition. Gradient AllReduce step is also handled by Distributed Data Parallel module so we do not have to explicitly average the gradients in the training step.  
 
 4. Infrastructure Choices  
 
