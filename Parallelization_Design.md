@@ -107,14 +107,14 @@ As discussed above, there are two main differences for distributed version compa
 
 ![naiveallreduce](naiveallreduce.png)
 
- During the forward and backward propagation, each GPU calculates its own loss, calcualte and process the corresponding gradient which involves clipping and noise addition. All-Reduce is a combined operation of reduce and broadcast in MPI. In the *gradient AllReduce* step, the all local gradients are averaged (reduction) and are used to update model parameters across all of the devices (broadcast). 
+This way of implementing AllReduce algorithm has several advantages: the computation is completely deterministic. It's simple to implement, and easy to debug and analyze. However, we note that this approach is not ideal. It sends unnecessary messages, which can increase the communication overhead. In our experiment, since we are not able to request more than 4 GPU devices from AWS, the communication overhead is not significant and this version of code obtained comparable performance with Code Version 1. We leave the implementation of more fine-grained AllReduce algorithm (e.g. Tree AllReduce, Round-robin shown above) as our future work. 
 
 ### Backend & Infrastructure Choices  
 
-Pytorch Distributed package is abstract and can be built on different backends. Our choice including Gloo and NCCL. However, since we are mainly working with CUDA tensors, and the collective operations for CUDA tensors provided by Gloo is not as optimized as the ones provided by the NCCL backend, we decide to use NCCL backend through out all of the experiments. 
+Pytorch Distributed package is abstract and can be built on different backends. Our choices including Gloo and NCCL. However, since we are mainly working with CUDA tensors, and the collective operations for CUDA tensors provided by Gloo is not as optimized as the ones provided by the NCCL backend, we decide to use NCCL backend through out all of the experiments. 
 
-AWS has been used for its flexibility to customize with different environments. Since AWS G3 instances are relatively more cost-effective than P2 type instances, we choose mostly G3 for our experiments. G3 instances are back up with NVIDIA Tesla M60 GPUs, where each GPU delivering up to 2,048 parallel processing cores and 8 GiB of GPU memory.   
+We decide to use AWS EC instances as the computing infrastructure for its flexibility to customize with different environments. Since AWS G3 instances are relatively more cost-effective than P2 type instances, we choose mostly G3 for our experiments. G3 instances are back up with NVIDIA Tesla M60 GPUs, where each GPU delivering up to 2,048 parallel processing cores and 8 GiB of GPU memory.   
 
-To save cost on storage and to prevent from downloading multiple copies of the data, we share the data folder through Network File System (NFS).
+To save cost on storage and to prevent from uploading/downloading multiple copies of the data, we share the data folder through Network File System (NFS).
 
 
