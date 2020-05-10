@@ -1,19 +1,28 @@
-# Discussion
+# Discussion and Future Work
 
 Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepage.
 
 ## Table of Contents
 1. [Goals Achieved](#goals-achieved)
+  * [Data Processing](#data-processing)
+  * [Distributed Computing](#distributed-computing)
 2. [Future Work](#future-work)
+  * [Advanced All-Reduce algorithms](#advanced-all-reduce-algorithms)
   * [Ring All-Reduce](#ring-all-reduce)
 
 ## Goals Achieved
 
+### Data Processing
+
+The dataset we used contains around 1.2 millions records. All data preprocessing tasks are carried out on Spark. Before using Spark to process data, it took 78.52s. And after using Spark, data processing steps only took us 3.587s. The speed-up is 21.89.
+
+### Distributed Computing
+
+We successfully deployed DPSGD model to multiple GPU’s and carried out experiments with varying number of nodes and batch sizes. Through parallelization, we reduced the runtime from 528s (one epoch) using a single g3.4xlarge down to 170.86 (one epoch) using 1 g3.16xlarge. We also implemented a dynamic load balancer that distributes batches of deferring sizes to GPUs based on their performance at the start of each epoch. 
+
 ## Future Work
 
-### Advanced All-Reduce
-
-**1. Advanced All-Reduce algorithms**
+### Advanced All-Reduce algorithms
 
 In the Model Design section, we have already implement an All-Reduce algorithm. Due to the limit of the time, we cannot implement more advance All-Reduce algorithms. So, for the future work, we want to use some other All-Reduce algorithm to further improve the performance. 
 
@@ -23,7 +32,7 @@ There are many other implementations of the All-Reduce algorithms. Some that try
 
 (Figure 1 from [[Zhao, Canny]](https://arxiv.org/abs/1312.3020))
 
-**2. Ring All-Reduce**
+### Ring All-Reduce
 
 ![Ring-allreduce](ring-allreduce.jpg) 
 
