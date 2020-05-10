@@ -48,12 +48,13 @@ As an optimization method, differential private SGD is developed from vanilla st
 ### Parallelization Design
 
 #### Parallelization Design Choices Review   
+There has been quite a bit of work on parallel machine learning approaches In this section, we review some design choices in distributed deep learning training. 
 
 - Model Parallel vs Data Parallel  
     
-    There are two approaches to parallelize the training of neural networks: *model parallelization* and *data parallelization*. Model parallel "breaks" the neural network into different parts and place different parts on different nodes. For instance, we could put the first half of the layers on one GPU, and the other half on a second one. However, this approach is rarely used in practice because of the huge communication and scheduling overhead [[Mao]](https://leimao.github.io/blog/Data-Parallelism-vs-Model-Paralelism/).
+    There are two approaches to parallelize the training of neural networks: *model parallelism* and *data parallelism*. Model parallel "breaks" the neural network into different parts and place different parts on different nodes. For instance, we could put the first half of the layers on one GPU, and the other half on a second one. However, this approach is rarely used in practice because of the huge communication and scheduling overhead [[Mao]](https://leimao.github.io/blog/Data-Parallelism-vs-Model-Paralelism/).
     
-    Data parallelization divides the dataset across all available computational nodes, and each process holds a copy of the current neural network, called *replica*. Each node computes gradients on its own data, and they merge the gradients to update the model parameters. Different ways of merging gradients lead to different algorithms and performance. 
+    Data parallelization divides the dataset across all available GPU per nodes, and each process holds a copy of the current neural network, called *replica*. Each node computes gradients on its own data, and they merge the gradients to update the model parameters. Different ways of merging gradients lead to different algorithms and performance [[Arnold]](http://seba1511.net/dist_blog/article.pdf). 
     
 - Parameter Server vs Tree Reduction 
     
