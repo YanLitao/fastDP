@@ -101,6 +101,8 @@ Click <a href="https://yanlitao.github.io/fastDP">here</a> to go back to Homepag
 
 ## Distributed DPSGD with GPU acceleration
 
+### Infrastructure Deploying & Environment Setup
+
 **1. Creating the Nodes**
 
 >a. login **AWS EC2** and select **Launch Instance**.
@@ -157,11 +159,12 @@ Configure the NFS client on other nodes:
   
 >d. Make the mount permanent (optional): add the following line `<Master Noder Private>:/home/ubuntu/cloud /home/ubuntu/cloud nfs` to `/etc/fstab` by executing `node$ sudo bi /etc/fstab`.
 
+### Running the Program
 
-**4. Getting the code processed data**
+**1. Getting the code processed data**
 
 
-**5. Runnng the sequential version of DPSGD**
+**2. Runnng the sequential version of DPSGD**
 
 Run the following command on one node:
 ```
@@ -170,22 +173,42 @@ python seq_main.py --num_epoch=<# epoch to run> --path=<path of training data> -
 
 If you want to profile the sequential code and analyze the "hot-spot" of the program, you can use python `cProfile` library, and run command:
 ```
-python seq_main.py --num_epoch=<# epoch to run> --path=<path of training data> --l2_norm_clip=<gradient norm bound> --noise_multiplier=<gradient noise multiplier> --batch_size=<batch size> --minibatch_size=<minibatch size for DPSGD> --lr=<learning rate>
+python -m cProfile -o seq_main.profile seq_main.py --num_epoch=<# epoch to run> --path=<path of training data> --l2_norm_clip=<gradient norm bound> --noise_multiplier=<gradient noise multiplier> --batch_size=<batch size> --minibatch_size=<minibatch size for DPSGD> --lr=<learning rate>
 ```
 
 
-**6. Running the distributed version of DPSGD**
+**3. Running the distributed version of DPSGD**
 
 - Run version 1 of distributed DPSGD (based on DistributedDataParallel module)
 ```
 python dist_main_v1.py --size=<total # of processes> --master_ip=<private ip addr of master node> --master_port=<a free port of master node> --rank=<global rank of current process> --local_rank=<local rank of current process> --dist_backend=<backend of PyTorch Distributed Library> --num_epoch=<# epoch to run> --workers=<# workers> --path=<path of data> --l2_norm_clip=<gradient norm bound> --noise_multiplier=<gradient noise multiplier> --batch_size=<global batch size> --minibatch_size=<minibatch size for DPSGD> --lr=<learning rate>
 ```
 
-For example, when we have 2 nodes and each with 1 GPU, we can run
+	For example, when we have 2 nodes and each with 1 GPU, we can run
+	```
+	python dist_main_v1.py --size=2 --master_ip=<private ip addr of master node> --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
+	```
+	on the first node, and run 
+	```
+	python dist_main_v1.py --size=2 --master_ip=<private ip addr of master node> --master_port=23456 --rank=1 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
+	```
+	on the second node. 
 
-```
-python dist_package_main.py --size=2 --master_ip=<private ip addr of master node> --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
-```
+- Run version 2 of distributed DPSGD (implemented from scratch)
+	
+	When all of the nodes have only one GPU device, the way to run Version 2 of code is exactly the same as the way to run Version 1. 
+	
+	When we have nodes that contain multiple GPUs (e.g. g3.8xlarge or g3.16xlarge), for the first process that uses device `'cuda:0'`, the command are exactly the same as above. However, process that uses device 'cuda:x', we should run:  
+	```
+CUDA_VISIBLE_DEVICES=x python dist_main_v2.py --size=<total # of processes> --master_ip=<private ip addr of master node> --master_port=<a free port of master node> --rank=<global rank of current process> --local_rank=<local rank of current process> --dist_backend=<backend of PyTorch Distributed Library> --num_epoch=<# epoch to run> --workers=<# workers> --path=<path of data> --l2_norm_clip=<gradient norm bound> --noise_multiplier=<gradient noise multiplier> --batch_size=<global batch size> --minibatch_size=<minibatch size for DPSGD> --lr=<learning rate>
+	```
+	For example, when we are using one g3.8xlarge node with 2 GPUs, for the process that uses `'cuda:1'`, we can run 
+	```
+	CUDA_VISIBLE_DEVICES=1 python dist_main_v1.py --size=2 --master_ip=<private ip addr of master node> --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
+	```
+	Note that here the local rank of this process is 0 since this process only sees one GPU device. `CUDA_VISIBLE_DEVICES=1` is mainly used to prevent runtime error that arguments may contain in different GPUs. 
+
+
 
 
 
