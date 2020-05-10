@@ -45,6 +45,8 @@ As an optimization method, differential private SGD is developed from vanilla st
 
 ![dpsgd](dpsgd.png)
 
+Because of the two extra steps of gradient clipping and noise addition, the execution time of DPSGD is about 100 times longer than the original DPSGD. Therefore, the parallelization of DPSGD is a significant work and will be a research hot-spot in the future. 
+
 ### Parallelization Design
 
 #### Parallelization Design Choices Review   
