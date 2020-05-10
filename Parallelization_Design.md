@@ -78,12 +78,12 @@ The following pseudo-code describes synchronous distributed DPSGD at the replica
 
 ![Distributed DPSGD](distdpsgd.png)  
 
-There are two main differences compared with sequential version of DPSGD: *data partition* and *gradient AllReduce*. For data partition stage, we divide the dataset into different pieces and assign each node one of the pieces. Later in the model training stage, each node will only sample batch data from its own portion of the data. This avoids the need of communicating the split of data across each node during the training stage. During the forward and backward propagation, each GPU calculates its own loss, calcualte and process the corresponding gradient which involves clipping and noise addition. AllReduce is a combined operation of reduce and broadcast in MPI. In the *gradient AllReduce* step, all of the local gradients are averaged (reduction) and are used to update model parameters across all of the devices (broadcast).  
+There are two main differences compared with sequential version of DPSGD: *data partition* and *gradient AllReduce*. For data partition stage, we divide the dataset into different pieces and assign each node one of the pieces. Later in the model training stage, each node will only sample batch data from its own portion of the data. This avoids the need of communicating the split of data across each node during the training stage. During the forward and backward propagation, each GPU will calcualte and process the corresponding gradient which involves clipping and noise addition. AllReduce is a combined operation of reduce and broadcast in MPI. In the *gradient AllReduce* step, all of the local gradients are averaged (reduction) and are used to update model parameters across all of the devices (broadcast).  
 
 ### Code Version 1: Distributed Data Parallel module  
 
 We first decide to implement a version of distributed DPSGD using PyTorch Distributed Data Parallel module with CUDA. 
-Distributed Data Parallel module is a well-tested and well-optimized version for multi-GPU distributed training. When we wrap up our model with DistributedDataParallel, the constructor of DistributedDataParallel will register the additional gradient reduction functions on all the parameters of the model at the time of construction so that we do not need to explicitly handle gradient aggregation and parameter updates across the computational nodes during the model training.
+Distributed Data Parallel module is a compact, well-tested and well-optimized version for multi-GPU distributed training. When we wrap up our model with DistributedDataParallel, the constructor of DistributedDataParallel will register the additional gradient reduction functions on all the parameters of the model at the time of construction so that we do not need to explicitly handle gradient aggregation and parameter updates across the computational nodes during the model training.
 
 ```python
 dp_device_ids = [local_rank]
