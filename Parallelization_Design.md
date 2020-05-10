@@ -56,9 +56,15 @@ There has been quite a bit of work on parallel machine learning approaches In th
     
     Data parallelization divides the dataset across all available GPU per nodes, and each process holds a copy of the current neural network, called *replica*. Each node computes gradients on its own data, and they merge the gradients to update the model parameters. Different ways of merging gradients lead to different algorithms and performance [[Arnold]](http://seba1511.net/dist_blog/article.pdf). 
     
-- Parameter Server vs Tree Reduction 
+- Parameter Server vs AllReduce
     
-    There are two options to setup the architecture of the system: *parameter server* and *tree-reductions*. For the case of parameter server, one machine is responsible for holding and serving the global parameters to all replicas, which serves as a higher-level manager process. However, as discussed in \cite[], parameter servers tend to have worse scalability than tree-reduction architectures. Tree-reduction refers to the case when an infrastructure whose collective operations are executed without a higher-level manager process. The massage-passing interface (MPI) and its collective communcation operations (e.g. scatter, gather, reduce) are typical examples. 
+    There are two options to setup the architecture of the system: *parameter server* and *tree-reductions*. For the case of parameter server, one machine is responsible for holding and serving the global parameters to all replicas, which serves as a higher-level manager process. However, as discussed in [[Arnold]](http://seba1511.net/dist_blog/article.pdf), parameter servers tend to have worse scalability than tree-reduction architectures. 
+    
+    Allreduce is an MPI-primitive which allows normal sequential code to work in parallel, implying very low programming overhead. This allows gradient aggregation and parameter updating. The massage-passing interface (MPI) and its collective communcation operations (e.g. scatter, gather, reduce) are used to implement AllReduce algorithm. The fundamental drawbacks are poor performance under misbalanced loads and difficulty with models that exceed working memory in size. There are many implementations of the Allreduce algorithm, as shown below.
+    
+    ![allreduce](allreduce.png) (Figure 2 from [[Zhao, Canny]](https://arxiv.org/abs/1312.3020))
+    
+In this project, we implement data parallelism with tree reduction programming model (MPI). 
     
 #### From Scratch Version  
 
