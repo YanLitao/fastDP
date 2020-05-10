@@ -186,11 +186,11 @@ python dist_main_v1.py --size=<total # of processes> --master_ip=<private ip add
 
 	For example, when we have 2 nodes and each with 1 GPU, we can run
 	```
-	python dist_main_v1.py --size=2 --master_ip=<private ip addr of master node> --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
+	python dist_main_v1.py --size=2 --master_ip=172.16.254.1 --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
 	```
 	on the first node, and run 
 	```
-	python dist_main_v1.py --size=2 --master_ip=<private ip addr of master node> --master_port=23456 --rank=1 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
+	python dist_main_v1.py --size=2 --master_ip=172.16.254.1 --master_port=23456 --rank=1 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
 	```
 	on the second node. 
 
@@ -204,9 +204,20 @@ CUDA_VISIBLE_DEVICES=x python dist_main_v2.py --size=<total # of processes> --ma
 	```
 	For example, when we are using one g3.8xlarge node with 2 GPUs, for the process that uses `'cuda:1'`, we can run 
 	```
-	CUDA_VISIBLE_DEVICES=1 python dist_main_v1.py --size=2 --master_ip=<private ip addr of master node> --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
+	CUDA_VISIBLE_DEVICES=1 python dist_main_v2.py --size=2 --master_ip=172.16.254.1 --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
 	```
 	Note that here the local rank of this process is 0 since this process only sees one GPU device. `CUDA_VISIBLE_DEVICES=1` is mainly used to prevent runtime error that arguments may contain in different GPUs. 
+	
+	
+## System Information
+
+### Software Version
+- Python 3.6.5
+- PyTorch 1.1.0
+
+### CUDA GPU Information
+
+### AWS Instance Information
 
 
 
