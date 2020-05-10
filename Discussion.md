@@ -23,6 +23,6 @@ There are many other implementations of the Allreduce algorithm. Some that try t
 
 **2. Ring All-Reduce**
 
-![Ring-allreduce](ring-allreduce.png) (Figure 2 from [[Edir Garcia]](https://towardsdatascience.com/visual-intuition-on-ring-allreduce-for-distributed-deep-learning-d1f34b4911da))
+![Ring-allreduce](ring-allreduce.jpg) (Figure 2 from [[Edir Garcia]](https://towardsdatascience.com/visual-intuition-on-ring-allreduce-for-distributed-deep-learning-d1f34b4911da))
 
 Ring All-Reduce is an algorithm that instead of having a single parameter server, they pass the parameters around to each worker in a ring fashion. The ring implementation of Allreduce has two phases. The first phase, the share-reduce phase, and then a share-only phase. We want to implement this algorithm in the future, and it may remarkably imporve the speed-up.
