@@ -158,12 +158,27 @@ Configure the NFS client on other nodes:
 >d. Make the mount permanent (optional): add the following line `<Master Noder Private>:/home/ubuntu/cloud /home/ubuntu/cloud nfs` to `/etc/fstab` by executing `node$ sudo bi /etc/fstab`.
 
 
-**4. Getting the processed data**
+**4. Getting the code processed data**
 
-**5. Running the distributed version of code**
 
+**5. Runnng the sequential version of DPSGD**
+
+Run the following command on one node:
 ```
-python dist_package_main.py --size=<total # of processes> --master_ip=<private ip addr of master node> --master_port=<a free port of master node> --rank=<global rank of current process> --local_rank=<local rank of current process> --dist_backend=<backend of PyTorch Distributed Library> --num_epoch=<# epoch to run> --workers=<# workers> --path=<path of data> --l2_norm_clip=<gradient norm bound> --noise_multiplier=<gradient noise multiplier> --batch_size=<global batch size> --minibatch_size=<minibatch size for DPSGD> --lr=<learning rate>
+python seq_main.py --num_epoch=<# epoch to run> --path=<path of training data> --l2_norm_clip=<gradient norm bound> --noise_multiplier=<gradient noise multiplier> --batch_size=<batch size> --minibatch_size=<minibatch size for DPSGD> --lr=<learning rate>
+```
+
+If you want to profile the sequential code and analyze the "hot-spot" of the program, you can use python `cProfile` library, and run command:
+```
+python seq_main.py --num_epoch=<# epoch to run> --path=<path of training data> --l2_norm_clip=<gradient norm bound> --noise_multiplier=<gradient noise multiplier> --batch_size=<batch size> --minibatch_size=<minibatch size for DPSGD> --lr=<learning rate>
+```
+
+
+**6. Running the distributed version of DPSGD**
+
+- Run version 1 of distributed DPSGD (based on DistributedDataParallel module)
+```
+python dist_main_v1.py --size=<total # of processes> --master_ip=<private ip addr of master node> --master_port=<a free port of master node> --rank=<global rank of current process> --local_rank=<local rank of current process> --dist_backend=<backend of PyTorch Distributed Library> --num_epoch=<# epoch to run> --workers=<# workers> --path=<path of data> --l2_norm_clip=<gradient norm bound> --noise_multiplier=<gradient noise multiplier> --batch_size=<global batch size> --minibatch_size=<minibatch size for DPSGD> --lr=<learning rate>
 ```
 
 For example, when we have 2 nodes and each with 1 GPU, we can run
@@ -171,6 +186,8 @@ For example, when we have 2 nodes and each with 1 GPU, we can run
 ```
 python dist_package_main.py --size=2 --master_ip=<private ip addr of master node> --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
 ```
+
+
 
 
 
