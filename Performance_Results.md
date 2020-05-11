@@ -4,8 +4,14 @@ Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepa
 
 ## Table of Contents
 1. [Metrics of Performance](#metrics-of-performance)
+2. [Data Preprocessing](#data-preprocessing)
   * [Spark Data Processing](#spark-data-processing)
   * [Distributed DPSGD](#distributed-dpsgd)
+3. [Distributed DPSGD](#distributed-dpsgd)
+  * [Code Baseline](#code-baseline)
+  * [Experiment with Different Number of GPU](#experiment-with-different-number-of-gpu)
+  * [Experiment with Different Distributations of GPU](#experiment-with-different-distributations-of-gpu)
+  * [Money Tradeoff](#money-tradeoff)
 
 ## Metrics of Performance
 
@@ -16,6 +22,8 @@ average time per epoch: each experiment we run 10 epoch for the training, and we
 speedup: speedup is a number that measures the relative performance of two systems processing the same problem. Specifically, if the amount of time to complete a work unit with 1 processing element is t1, and the amount of time to complete the same unit of work with N processing elements is tN, the strong scaling speedup is t1/tn. We use strong scaling speedup in the following paragraphs.
 
 Strong scaling vs Weak scaling for measuring ML performance
+
+## Data Preprocessing
 
 ### MapReduce Data Processing
 
@@ -38,14 +46,14 @@ Strong scaling vs Weak scaling for measuring ML performance
 
  * Strong scaling, weak scaling 
 
-### Distributed DPSGD
+## Distributed DPSGD
 
-#### Code Baseline
+### Code Baseline
 
 Original SGD vs Original DPSGD:
 Compared to the original SGD, DPSGD could achieve approximately similar testing accuracy in terms of prediction. The runtime of DPSGD is significantly slower than the original one, and the bottleneck of the algorithm is mainly the minibatch_step in backpropagation. However, the upside of using this optimizer is we could better protect the privacy of data while training the model. Here we have demonstrated that by using DPSGD, the model can better protect training data from model inversion attack1 by lowering the attacker’s accuracy.
 
-1: Model inversion attack is a famous privacy attack against machine learning models. The access to a model is abused to infer information about the training data, which raised serious concerns given that training data usually contain privacy sensitive information. We use the success rate of model inversion attack as the criteria for the effectiveness of DP training.
+Model inversion attack is a famous privacy attack against machine learning models. The access to a model is abused to infer information about the training data, which raised serious concerns given that training data usually contain privacy sensitive information. We use the success rate of model inversion attack as the criteria for the effectiveness of DP training.
 
  **Profiling Results**
 
@@ -56,7 +64,7 @@ Compared to the original SGD, DPSGD could achieve approximately similar testing 
 
 ![baseline performance](re1.png)
 
-#### Experiment with Different Number of GPU
+### Experiment with Different Number of GPU
  
  **package version:**
 
@@ -78,10 +86,10 @@ Compared to the original SGD, DPSGD could achieve approximately similar testing 
 
 ![different number gpu scratch](re3.png)
 
-analysis: 
+**analysis:**
 Since we are using strong scaling to calculate GPU speedup, each GPU will handle a smaller part of data as the number of GPU increases. Here we can see that the time of each epoch decreases is almost proportional to the number of GPU increases. However, we haven’t achieved ideally linear speedup because of data partition and communication overheads.
 
-#### Experiment with Different Distributations of GPU
+### Experiment with Different Distributations of GPU
  
  **package version:**
  
@@ -103,10 +111,10 @@ Since we are using strong scaling to calculate GPU speedup, each GPU will handle
 
 ![different distributations gpu scratch](re5.png)
 
-analysis: 
+**analysis:**
 We also tried out different distributions of GPU clusters with 4 GPUs within each. The clusters achieve approximately the same speedup, while the node with 4 GPU builtin achieves the best performance. We think this is mainly because it has only intra-node communication which is lower than internode communication overhead.
 
-#### Money Tradeoff
+### Money Tradeoff
 
 | Experiment      | \# GPU | Time \(s\) | price / hour | Cost   |
 |-----------------|--------|------------|--------------|--------|
@@ -116,7 +124,7 @@ We also tried out different distributions of GPU clusters with 4 GPUs within eac
 | 4\*g3\.4xlarge  | 4      | 2144       | 4\.56        | 2\.72  |
 | 2\*g3\.8xlarge  | 4      | 1937       | 4\.56        | 2\.45  |
 
-analysis:
+**analysis:**
 g3.4x large is the cheapest instance among all GPU’s, but it is also pretty slow compared to multi-GPU clusters.
 g3.16x large is the fastest one among all distributed GPU cluster’s, as it only has intra-node communication which is lower than inter-node communication overhead.
 Hence, in our case the single node GPUs are usually best money for value given the lower overhead involved. So, you can go for any single node multi GPUs for the best combination of speed and price.
