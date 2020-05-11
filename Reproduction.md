@@ -217,6 +217,8 @@ CUDA_VISIBLE_DEVICES=x python dist_main_v2.py --size=<total # of processes> --ma
 
 ### CUDA GPU Information
 
+![cudainfo](reproduction-cudainfo.png)
+
 ### AWS Instance Information
 
 
