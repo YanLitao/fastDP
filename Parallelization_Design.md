@@ -11,8 +11,8 @@ Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepa
   * [Neural Network Architecture](#neural-network-architecture)
   * [Differential Private Stochastic Gradient Descent](#differential-private-stochastic-gradient-descent)
   * [Parallelization Design](#parallelization-design)
-  * [Code Version 1: Distributed Data Parallel module](#code-version-1:-distributed-data-parallel-module)
-  * [Code Version 2: Implement from scratch](#code-version-2:-implement-from-scratch)
+  * [Code Version 1: Distributed Data Parallel module](#code-version-1-distributed-data-parallel-module)
+  * [Code Version 2: Implement from scratch](#code-version-2-implement-from-scratch)
   * [Backend & Infrastructure Choices](#backend-&-infrastructure-choices)
 
 ## Data and Preprocessing
