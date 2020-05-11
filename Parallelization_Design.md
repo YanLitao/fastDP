@@ -13,7 +13,7 @@ Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepa
   * [Parallelization Design](#parallelization-design-1)
   * [Code Version 1: Distributed Data Parallel module](#code-version-1-distributed-data-parallel-module)
   * [Code Version 2: Implement from scratch](#code-version-2-implement-from-scratch)
-  * [Backend & Infrastructure Choices](#backend-&-infrastructure-choices)
+  * [Backend & Infrastructure Choices](#backend--infrastructure-choices)
 
 ## Data and Preprocessing
 
