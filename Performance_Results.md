@@ -1,4 +1,4 @@
-# Experiments and Performance Results
+# Experiments & Performance Results
 
 Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepage.
 
@@ -15,13 +15,15 @@ Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepa
 
 ## Metrics of Performance
 
-while measuring the performance of the experiment, we focus on the following metrics:
+To correctly measure the performance of the parallelized program, we focus on the following metrics:
 
-average time per epoch: each experiment we run 10 epoch for the training, and we use average execution time per epoch as the indication of speed for the experiment, since DPSGD optimization and parallelization mainly happen in the training loop of the model. 
+- Average execution time per epoch: for each experiment we run 10 epochs for differentially private training, and we use average execution time per epoch as the indicator of training speed. The recorded time only includes DP training loop, since for the extra steps, such as cross validation, are not absolutely necessary and it makes no sense to include them when calculating training time. 
 
-speedup: speedup is a number that measures the relative performance of two systems processing the same problem. Specifically, if the amount of time to complete a work unit with 1 processing element is t1, and the amount of time to complete the same unit of work with N processing elements is tN, the strong scaling speedup is t1/tn. We use strong scaling speedup in the following paragraphs.
+- Speedup: speedup is an indicator that measures the relative performance of two systems processing the same problem. Specifically, if the amount of time to complete a work unit with 1 processing element is T1, and the amount of time to complete the same unit of work with n processing elements is Tn, the strong scaling speedup is T1/Tn. We use **strong scaling speedup** in all of the experiments.
 
-Strong scaling vs Weak scaling for measuring ML performance
+**Special Note for Measuring Runtime of Learning Algorithm**
+
+In usual computer science algorithm, we measure the numerical complexity of a problem as a function of input size, but for a learning algorithm, it does not make sense to define the problem size to be the size of training set [[Shalev-Shwartz, Ben-David]](https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/understanding-machine-learning-theory-algorithms.pdf). If we give the learning algorithm a very large training set, which is much larger than the sample complexity (the minimal size of training set required for good generalization) of the learning problem, the algorithm can simply ignore the extra examples. Therefore, a larger training set does not make the learning problem more difficult, and, consequently, the runtime available for a learning algorithm should not increase as we increase the size of the training set. To avoid the conceptual controversy, we decided to fix the size of our training data in all of our experiment and always measure strong scaling speedup. 
 
 ## Data Preprocessing
 
