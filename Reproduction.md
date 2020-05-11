@@ -168,48 +168,73 @@ d. Make the mount permanent (optional): add the following line `<Master Noder Pr
 
 **2. Runnng the sequential version of DPSGD**
 
+We use json file to load training parameters. 
+
 Run the following command on one node:
 ```
-python seq_main.py --num_epoch=<# epoch to run> --path=<path of training data> --l2_norm_clip=<gradient norm bound> --noise_multiplier=<gradient noise multiplier> --batch_size=<batch size> --minibatch_size=<minibatch size for DPSGD> --lr=<learning rate>
+python seq_main.py --settings_path=<path of json file for training parameters> 
+```
+
+For example, if the parameter settings are stored in `config/seq_train.json`, then simply run 
+```
+python seq_main.py --settings_path="config/seq_train.json"
 ```
 
 If you want to profile the sequential code and analyze the "hot-spot" of the program, you can use python `cProfile` library, and run command:
 ```
-python -m cProfile -o seq_main.profile seq_main.py --num_epoch=<# epoch to run> --path=<path of training data> --l2_norm_clip=<gradient norm bound> --noise_multiplier=<gradient noise multiplier> --batch_size=<batch size> --minibatch_size=<minibatch size for DPSGD> --lr=<learning rate>
+python -m cProfile -o seq_main.profile seq_main.py --settings_path="config/seq_train.json" 
 ```
 
+Here's the interpretation of training parameters in `config/seq_main.json`:
 
-**3. Running the distributed version of DPSGD**
+ * num_epoch: total number of epochs
+ * path: path of the training data
+ * l2\_norm\_clip: gradient norm bound (privacy parameter)
+ * noise_multiplier: gradient noise multiplier (privacy parameter)
+ * batch_size: training batch size
+ * minibatch_size: minibatch size for gradient clipping
+ * lr: learning rate
 
-- Run version 1 of distributed DPSGD (based on DistributedDataParallel module)
+
+**3. Run version 1 of distributed DPSGD (based on DistributedDataParallel module)**
 
 ```
-python dist_main_v1.py --size=<total # of processes> --master_ip=<private ip addr of master node> --master_port=<a free port of master node> --rank=<global rank of current process> --local_rank=<local rank of current process> --dist_backend=<backend of PyTorch Distributed Library> --num_epoch=<# epoch to run> --workers=<# workers> --path=<path of data> --l2_norm_clip=<gradient norm bound> --noise_multiplier=<gradient noise multiplier> --batch_size=<global batch size> --minibatch_size=<minibatch size for DPSGD> --lr=<learning rate>
+python dist_main_v1.py --settings_path=<path of json file for training parameters> --rank=<global rank of current process> --local_rank=<local rank of current process>
 ```
 
-For example, when we have 2 nodes and each with 1 GPU, we can run
+For example, if setting parameters are stored in `config/dist_train.json`, and we have 2 nodes and each with 1 GPU, we can run
 ```
-python dist_main_v1.py --size=2 --master_ip=172.16.254.1 --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
+python dist_main_v1.py --settings_path="config/dist_train.json" --rank=0 --local_rank=0
 ```
 
 on the first node, and run 
 ```
-python dist_main_v1.py --size=2 --master_ip=172.16.254.1 --master_port=23456 --rank=1 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
+python dist_main_v1.py --settings_path="config/dist_train.json" --rank=1 --local_rank=0
 ```
 on the second node. 
 
-- Run version 2 of distributed DPSGD (implemented from scratch)
+The extra distributed training parameters in `config/dist_train.json` are:
+ 
+ * world_size: total number of processes
+ * master_ip: private ip addr of master node
+ * master_port: a free port of master node
+ * dist_backend: backend of PyTorch Distributed Library
+ * rank: the global rank of current process
+ * local_rank: the local rank of the current process (i.e. the ith GPU in the node)
+
+
+**4. Run version 2 of distributed DPSGD (implemented from scratch)**
 	
 When all of the nodes have only one GPU device, the way to run Version 2 of code is exactly the same as the way to run Version 1. 
 	
 When we have nodes that contain multiple GPUs (e.g. g3.8xlarge or g3.16xlarge), for the first process that uses device `'cuda:0'`, the command are exactly the same as above. However, process that uses device 'cuda:x', we should run:  
 ```
-CUDA_VISIBLE_DEVICES=x python dist_main_v2.py --size=<total # of processes> --master_ip=<private ip addr of master node> --master_port=<a free port of master node> --rank=<global rank of current process> --local_rank=<local rank of current process> --dist_backend=<backend of PyTorch Distributed Library> --num_epoch=<# epoch to run> --workers=<# workers> --path=<path of data> --l2_norm_clip=<gradient norm bound> --noise_multiplier=<gradient noise multiplier> --batch_size=<global batch size> --minibatch_size=<minibatch size for DPSGD> --lr=<learning rate>
+CUDA_VISIBLE_DEVICES=x python dist_main_v2.py --settings_path=<path of json file for training parameters> --rank=<global rank of current process> --local_rank=<local rank of current process>
 ```
 	
-For example, when we are using one g3.8xlarge node with 2 GPUs, for the process that uses `'cuda:1'`, we can run 
+For example, when we are using one g3.8xlarge node with 2 GPUs, for the process that uses `'cuda:1'`, we should run 
 ```
-CUDA_VISIBLE_DEVICES=1 python dist_main_v2.py --size=2 --master_ip=172.16.254.1 --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
+CUDA_VISIBLE_DEVICES=1 python dist_main_v2.py --settings_path="config/dist_train.json" --rank=1 --local_rank=0
 ```
 
 Note that here the local rank of this process is 0 since this process only sees one GPU device. `CUDA_VISIBLE_DEVICES=1` is mainly used to prevent runtime error that arguments may contain in different GPUs. 
