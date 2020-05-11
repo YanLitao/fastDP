@@ -6,11 +6,14 @@ Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepa
 1. [Data and Preprocessing](#data-and-preprocessing)
   * [Data Description](#data-description)
   * [Sequential Version](#sequential-version)
-  * [Parallelization](#parallelization)
-2. [Neural Network Model: use a big MLP](#neural-network-model-use-a-big-mlp)
-  * [Network Design](#network-design)
+  * [Parallelized Version](#parallelized-version)
+2. [Model Training](#model-training)
+  * [Neural Network Architecture](#neural-network-architecture)
   * [Differential Private Stochastic Gradient Descent](#differential-private-stochastic-gradient-descent)
   * [Parallelization Design](#parallelization-design)
+  * [Code Version 1: Distributed Data Parallel module](#code-version-1:-distributed-data-parallel-module)
+  * [Code Version 2: Implement from scratch](#code-version-2:-implement-from-scratch)
+  * [Backend & Infrastructure Choices](backend-&-infrastructure-choices)
 
 ## Data and Preprocessing
 
@@ -21,7 +24,7 @@ Our data comes from American Community Survey Public Use Microdata Sample (PUMS)
 ### Sequential Version
     1. Data Balancing Figure
 
-### Parallelization 
+### Parallelized Version
     1. MapReduce vs Spark
     
     2. What’s the Principle of Spark’s Parallelization? (what's the advantage of Spark over Mapreduce)
