@@ -7,6 +7,10 @@ Click <a href="https://yanlitao.github.io/fastDP">here</a> to go back to Homepag
   * [MapReduce](#mapreduce)
   * [Spark](#spark)
 2. [Distributed DPSGD with GPU acceleration](#distributed-dpsgd-with-gpu-acceleration)
+3. [System Information](#system-information)
+  * [Software Version](#software-version)
+  * [CUDA GPU Information](#cuda-gpu-information)
+  * [AWS Instance Information](#aws-instance-information)
 
 ## Data Processing
 
@@ -14,19 +18,19 @@ Click <a href="https://yanlitao.github.io/fastDP">here</a> to go back to Homepag
 
 **1. Launch Hadoop EMR cluster**
 
->a. login **AWS EMR** and select **Create cluster**. You can select the following configuration:
+a. login **AWS EMR** and select **Create cluster**. You can select the following configuration:
     
->>ClusterName: MySpark
+	ClusterName: MySpark
         
->>Launch mode “Cluster”
+	Launch mode “Cluster”
         
->>Release: 5.29.0
+	Release: 5.29.0
         
->>Applications: Spark
+	Applications: Spark
         
->>Instance type: m4.xlarge
+	Instance type: m4.xlarge
         
->>Number of Instances: 3
+	Number of Instances: 3
    
 >b. Click on “Create Cluster” and wait for the cluster to be ready. The cluster is ready when its state is “Waiting” and the Master and Core under the **Networks and hardware** section are both in “Running” state.
    
@@ -180,33 +184,36 @@ python -m cProfile -o seq_main.profile seq_main.py --num_epoch=<# epoch to run> 
 **3. Running the distributed version of DPSGD**
 
 - Run version 1 of distributed DPSGD (based on DistributedDataParallel module)
+
 ```
 python dist_main_v1.py --size=<total # of processes> --master_ip=<private ip addr of master node> --master_port=<a free port of master node> --rank=<global rank of current process> --local_rank=<local rank of current process> --dist_backend=<backend of PyTorch Distributed Library> --num_epoch=<# epoch to run> --workers=<# workers> --path=<path of data> --l2_norm_clip=<gradient norm bound> --noise_multiplier=<gradient noise multiplier> --batch_size=<global batch size> --minibatch_size=<minibatch size for DPSGD> --lr=<learning rate>
 ```
 
-	For example, when we have 2 nodes and each with 1 GPU, we can run
+For example, when we have 2 nodes and each with 1 GPU, we can run
 	```
-	python dist_main_v1.py --size=2 --master_ip=172.16.254.1 --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
+python dist_main_v1.py --size=2 --master_ip=172.16.254.1 --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
 	```
-	on the first node, and run 
+on the first node, and run 
 	```
-	python dist_main_v1.py --size=2 --master_ip=172.16.254.1 --master_port=23456 --rank=1 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
+python dist_main_v1.py --size=2 --master_ip=172.16.254.1 --master_port=23456 --rank=1 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
 	```
-	on the second node. 
+on the second node. 
 
 - Run version 2 of distributed DPSGD (implemented from scratch)
 	
-	When all of the nodes have only one GPU device, the way to run Version 2 of code is exactly the same as the way to run Version 1. 
+When all of the nodes have only one GPU device, the way to run Version 2 of code is exactly the same as the way to run Version 1. 
 	
-	When we have nodes that contain multiple GPUs (e.g. g3.8xlarge or g3.16xlarge), for the first process that uses device `'cuda:0'`, the command are exactly the same as above. However, process that uses device 'cuda:x', we should run:  
-	```
+When we have nodes that contain multiple GPUs (e.g. g3.8xlarge or g3.16xlarge), for the first process that uses device `'cuda:0'`, the command are exactly the same as above. However, process that uses device 'cuda:x', we should run:  
+```
 CUDA_VISIBLE_DEVICES=x python dist_main_v2.py --size=<total # of processes> --master_ip=<private ip addr of master node> --master_port=<a free port of master node> --rank=<global rank of current process> --local_rank=<local rank of current process> --dist_backend=<backend of PyTorch Distributed Library> --num_epoch=<# epoch to run> --workers=<# workers> --path=<path of data> --l2_norm_clip=<gradient norm bound> --noise_multiplier=<gradient noise multiplier> --batch_size=<global batch size> --minibatch_size=<minibatch size for DPSGD> --lr=<learning rate>
-	```
-	For example, when we are using one g3.8xlarge node with 2 GPUs, for the process that uses `'cuda:1'`, we can run 
-	```
-	CUDA_VISIBLE_DEVICES=1 python dist_main_v2.py --size=2 --master_ip=172.16.254.1 --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
-	```
-	Note that here the local rank of this process is 0 since this process only sees one GPU device. `CUDA_VISIBLE_DEVICES=1` is mainly used to prevent runtime error that arguments may contain in different GPUs. 
+```
+	
+For example, when we are using one g3.8xlarge node with 2 GPUs, for the process that uses `'cuda:1'`, we can run 
+```
+CUDA_VISIBLE_DEVICES=1 python dist_main_v2.py --size=2 --master_ip=172.16.254.1 --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
+```
+
+Note that here the local rank of this process is 0 since this process only sees one GPU device. `CUDA_VISIBLE_DEVICES=1` is mainly used to prevent runtime error that arguments may contain in different GPUs. 
 	
 	
 ## System Information
