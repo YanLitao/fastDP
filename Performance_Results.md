@@ -54,6 +54,8 @@ Compared to the original SGD, DPSGD could achieve approximately similar testing 
 | Sequential SGD   | 5\.322         | 5\.15              | 5\.104         | 0\.66     | 0\.74                      |
 | Sequential DPSGD | 528            | 510                | 487            | 0\.66     | 0\.61                      |
 
+![baseline performance](re1.png)
+
 #### Experiment with Different Number of GPU
  
  **package version:**
@@ -64,6 +66,8 @@ Compared to the original SGD, DPSGD could achieve approximately similar testing 
 | 1\*g3\.8xlarge  | 2                | 312                  | 310                      | 309                  | 0\.62    |
 | 1\*g3\.16xlarge | 4                | 181                  | 178                      | 175                  | 0\.615   |
 
+![different number gpu package](re2.png)
+
 **scratch version:**
 
 | \# of Nodes     | \# GPUs per Node | Max time \(s/epoch\) | Average time \(s/epoch\) | Min time \(s/epoch\) | Test Acc |
@@ -71,6 +75,8 @@ Compared to the original SGD, DPSGD could achieve approximately similar testing 
 | 1\*g3\.4xlarge  | 1                | 624                  | 615                      | 611                  | 0\.647   |
 | 1\*g3\.8xlarge  | 2                | 311                  | 304                      | 298                  | 0\.65    |
 | 1\*g3\.16xlarge | 4                | 174                  | 173                      | 171                  | 0\.656   |
+
+![different number gpu scratch](re3.png)
 
 analysis: 
 Since we are using strong scaling to calculate GPU speedup, each GPU will handle a smaller part of data as the number of GPU increases. Here we can see that the time of each epoch decreases is almost proportional to the number of GPU increases. However, we haven’t achieved ideally linear speedup because of data partition and communication overheads.
@@ -80,18 +86,22 @@ Since we are using strong scaling to calculate GPU speedup, each GPU will handle
  **package version:**
  
  | \# of Nodes                | \# GPUs per Node | Max time \(s/epoch\) | Average time \(s/epoch\) | Min time \(s/epoch\) | Test Acc |
-|----------------------------|------------------|----------------------|--------------------------|----------------------|----------|
+|----------------------------|--------------|--------------|--------------|--------------|--------------|
 | 4\*g3\.4xlarge \(1 GPU\)   | 1                | 191\.8               | 190\.3                   | 189\.3               | 0\.615   |
 | 2\*g3\.8xlarge \(2 GPUs\)  | 2                | 176\.8               | 173\.05                  | 174\.9               | 0\.615   |
 | 1\*g3\.16xlarge \(4 GPUs\) | 4                | 181\.4               | 175\.3                   | 177\.6               | 0\.615   |
 
+![different distributations gpu package](re4.png)
+
 **scratch version:**
 
 | \# of Nodes                | \# GPUs per Node | Max time \(s/epoch\) | Average time \(s/epoch\) | Min time \(s/epoch\) | Test Acc |
-|----------------------------|------------------|----------------------|--------------------------|----------------------|----------|
+|----------------------------|--------------|--------------|--------------|--------------|--------------|
 | 4\*g3\.4xlarge \(1 GPU\)   | 1                | 273\.9               | 269\.8                   | 265\.3               | 0\.654   |
 | 2\*g3\.8xlarge \(2 GPUs\)  | 2                | 209\.8               | 205\.7                   | 204\.9               | 0\.656   |
 | 1\*g3\.16xlarge \(4 GPUs\) | 4                | 174\.3               | 172\.8                   | 170\.86              | 0\.656   |
+
+![different distributations gpu scratch](re5.png)
 
 analysis: 
 We also tried out different distributions of GPU clusters with 4 GPUs within each. The clusters achieve approximately the same speedup, while the node with 4 GPU builtin achieves the best performance. We think this is mainly because it has only intra-node communication which is lower than internode communication overhead.
