@@ -1,4 +1,4 @@
-# Model Design
+# Parallelization Design
 
 Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepage.
 
