@@ -18,7 +18,7 @@ Click <a href="https://yanlitao.github.io/fastDP">here</a> to go back to Homepag
 
 **1. Launch Hadoop EMR cluster**
 
-a. login **AWS EMR** and select **Create cluster**. You can select the following configuration:
+>a. login **AWS EMR** and select **Create cluster**. You can select the following configuration:
     
 	ClusterName: MySpark
         
@@ -40,17 +40,17 @@ a. login **AWS EMR** and select **Create cluster**. You can select the following
     
 >b. Go to the Hadoop cluster dashboard’s **Steps** tab and click on “Add Step” with the following configuration:
     
->>Step type: Streaming program
+	Step type: Streaming program
         
->>Name: MyHadoopJob
+	Name: MyHadoopJob
         
->>Mapper: Complete path to uploaded mapper
+	Mapper: Complete path to uploaded mapper
         
->>Reducer: Complete path to uploaded reducer
+	Reducer: Complete path to uploaded reducer
         
->>Input: Complete path to uploaded input
+	Input: Complete path to uploaded input
         
->>Output: Complete path to new folder to be created with the output (it should not exist)
+	Output: Complete path to new folder to be created with the output (it should not exist)
      
 >c. Wait for the “step” to be “completed”;
      
@@ -67,19 +67,17 @@ a. login **AWS EMR** and select **Create cluster**. You can select the following
 
 >a. login **AWS EMR** and select **Create cluster**. You can select the following configuration:
     
->>ClusterName: MySpark
+	ClusterName: MySpark
         
->>Launch mode “Cluster”
+	Launch mode “Cluster”
         
->>Release: 5.29.0
+	Release: 5.29.0
         
->>Applications: Spark
+	Applications: Spark
         
->>Instance type: m4.xlarge
+	Instance type: m4.xlarge
         
->>Number of Instances: 3
-        
->>Key pair: see Guide “First Access to AWS”
+	Number of Instances: 3
         
 >b. Click on “Create Cluster” and wait for the cluster to be ready. The cluster is ready when its state is “Waiting” and the Master and Core under the Networks and hardware section are both in “Running” state;
     
@@ -190,13 +188,14 @@ python dist_main_v1.py --size=<total # of processes> --master_ip=<private ip add
 ```
 
 For example, when we have 2 nodes and each with 1 GPU, we can run
-	```
+```
 python dist_main_v1.py --size=2 --master_ip=172.16.254.1 --master_port=23456 --rank=0 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
-	```
+```
+
 on the first node, and run 
-	```
+```
 python dist_main_v1.py --size=2 --master_ip=172.16.254.1 --master_port=23456 --rank=1 --local_rank=0 --dist_backend=nccl --num_epoch=10 --workers=2 --path='./CaPUMS5full.csv' --l2_norm_clip=3 --noise_multiplier=0.9 --batch_size=256 --minibatch_size=3 --lr=0.01
-	```
+```
 on the second node. 
 
 - Run version 2 of distributed DPSGD (implemented from scratch)
