@@ -27,7 +27,7 @@ Our data comes from American Community Survey Public Use Microdata Sample (PUMS)
 
 The figure below shows the format of our dataset. Our data has over 1 million records and 10 features in total. Our objective is to use this data to train a deep learning model to predict the unemployment rate based on other demographic information using DPSGD and HPC and HTC tools so that we can both protect privacy and obtain a satisfiable runtime of the algorithm.
 
-![](dp.png =500x300)
+![](dp.png)
 
 ![](dp-1.png)
 
