@@ -18,16 +18,18 @@ Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepa
 ## Data and Preprocessing
 
 ### Data Description
-Our data comes from American Community Survey Public Use Microdata Sample (PUMS) files. It includes useful but somehow sensitive census information such as Sex, Married, College degree. Our objective is to train a deep learning model to predict the unemployment rate based on other demographic information using DPSGD and HPC and HTC tools so that we can both protect privacy and obtain a satisfiable runtime of the algorithm.
+Since a typical application of DPSGD is to work with sensitive data, we decided to choose a dataset which contains sensitive information but it is impossible to identify individual from the dataset.
+Our data comes from American Community Survey Public Use Microdata Sample (PUMS) files. PUMS files are perfect for people, especially for students, who are looking for greater accessibility to inexpensive data for research projects. It includes useful but somehow sensitive census information such as Sex, Married Status, College degree. PUMS records do not contain names, addresses or any information that can identify a specific housing unit, group, or person.
+
+### Data Overview
+The figure below shows the format of our dataset. Our data has over 1 million records and 10 features in total. Our objective is to use this data to train a deep learning model to predict the unemployment rate based on other demographic information using DPSGD and HPC and HTC tools so that we can both protect privacy and obtain a satisfiable runtime of the algorithm.
+
+From the above figure, we can see that the dataset is imbalanced. Since we have enough data and prediction accuracy is good in our pilot experiment, we did not modify data to much and focused on the improvement of running time and parallelization.
+
+### Parallelization: MapReduce vs Spark?
+Within the data preprocessing stage, we tried both Spark and MapReduce to process the data. The main job is to remove invalid records, check missing value, and impute data. According to our experiments, Spark has much better performance than MapReduce. From the perspective of data processing, MapReduce has a linear dataflow structure: It reads input data from disk and store results on disk while Spark processes data in-memory. As a result, the speed of Spark may be up to 100 times faster than MapReduce. From the perspective of our data volume, it is large but fits in the Spark clusters’ RAM, so Spark outperforms MapReduce. Moreover, MapReduce contains a “sort” stage in data processing which is not necessary in our project and may add extra time for processing data. Another reason to choose Spark is Spark is easy to implement and has interactive modes. It makes our code extensible and flexible. 
 
 
-### Sequential Version
-    1. Data Balancing Figure
-
-### Parallelized Version
-    1. MapReduce vs Spark
-    
-    2. What’s the Principle of Spark’s Parallelization? (what's the advantage of Spark over Mapreduce)
 
 
 ## Model Training
