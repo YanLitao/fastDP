@@ -115,17 +115,22 @@ c. Choose an Instance Type - Choose **g3.4xlarge** for testing multiple nodes wi
   
 d. Configure Instance Details - We only need to increase the **number of instances** to **2**;
   
-e. Add Storage - The default setting of storage is only 75 GB. And the default storage is enough for the STL-10 dataset. But, if you want to train on a larger dataset such as ImageNet, you will have to add much more storage just to fit the dataset and any trained models you wish to save;
+e. Add Storage - The default setting of storage is only 75 GB, which is enough for our dataset;
   
 f. Add Tags - Directly click on the next step;
   
-g. Configure Security Group - This is a critical step. By default two nodes in the same security group would not be able to communicate in the distributed training setting. Here, we want to create a new security group for the two nodes to be in. However, we cannot finish configuring in this step. For now, just remember your new security group name (e.g. launch-wizard-12) then move on to next step;
+g. Configure Security Group - create a new security group for the two nodes to be in. Remember your new security group name (e.g. dpsgd-secgroup) which will be used later;
   
-h. Review Instance Launch - Here, review the instance then launch it. By default, this will automatically start initializing the two instances. You can monitor the initialization progress from the dashboard.
+h. Review Instance Launch - review the instance then launch it; 
+
+i. Go to "Security Groups" and edit the rules for the security group you created at step g:
+
+- Inbound Rules: add rule that allow all traffics as Source.
+- Outbound Rules: Same as inbound.
 
 **2. Environment Setup**
   
-a. activate the pytorch environment: `source activate pytorch_p36`;
+a. Activate the pytorch environment: `source activate pytorch_p36`;
   
 b. Install the latest Pytorch 1.1: `conda install pytorch cudatoolkit=10.0 -c pytorch`;
   
