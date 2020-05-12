@@ -21,9 +21,13 @@ To correctly measure the performance of the parallelized program, we focus on th
 
 - Speedup: speedup is an indicator that measures the relative performance of two systems processing the same problem. Specifically, if the amount of time to complete a work unit with 1 processing element is T1, and the amount of time to complete the same unit of work with n processing elements is Tn, the strong scaling speedup is T1/Tn. We use **strong scaling speedup** in all of the experiments.
 
-**Special Note for Measuring Runtime of Learning Algorithm**
+**Special Note for Measuring Scalability of Learning Algorithm**
 
 In usual computer science algorithm, we measure the numerical complexity of a problem as a function of input size, but for a learning algorithm, it does not make sense to define the problem size to be the size of training set [[Shalev-Shwartz, Ben-David]](https://www.cs.huji.ac.il/~shais/UnderstandingMachineLearning/understanding-machine-learning-theory-algorithms.pdf). If we give the learning algorithm a very large training set, which is much larger than the sample complexity (the minimal size of training set required for good generalization) of the learning problem, the algorithm can simply ignore the extra examples. Therefore, a larger training set does not make the learning problem more difficult, and, consequently, the runtime available for a learning algorithm should not increase as we increase the size of the training set. To avoid the conceptual controversy, we decided to fix the size of our training data in all of our experiment and always measure strong scaling speedup. 
+
+**Special Note for the Batch Size in Distributed Training**
+
+Another experiment detail we would like to mention is our way to benchmark a distributed framework. There are many controversies about how to set the batch size in distributed training. After many discussions within our group and with TFs, we decided to keep the **overall batch size fixed** in all of our experiment. The reason is that we are trying to mimic the behavior of a sequential implementation. This means that when we increase the number of computational devices, we will rescale the local batch size by the number of replicas. For example, we set batch size to be 256 when measuring the baseline sequential DPSGD, we will set the local batch size to be 128 when we have two GPUs. 
 
 ## Data Preprocessing
 
