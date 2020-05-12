@@ -115,23 +115,28 @@ c. Choose an Instance Type - Choose **g3.4xlarge** for testing multiple nodes wi
   
 d. Configure Instance Details - We only need to increase the **number of instances** to **2**;
   
-e. Add Storage - The default setting of storage is only 75 GB. And the default storage is enough for the STL-10 dataset. But, if you want to train on a larger dataset such as ImageNet, you will have to add much more storage just to fit the dataset and any trained models you wish to save;
+e. Add Storage - The default setting of storage is only 75 GB, which is enough for our dataset;
   
 f. Add Tags - Directly click on the next step;
   
-g. Configure Security Group - This is a critical step. By default two nodes in the same security group would not be able to communicate in the distributed training setting. Here, we want to create a new security group for the two nodes to be in. However, we cannot finish configuring in this step. For now, just remember your new security group name (e.g. launch-wizard-12) then move on to next step;
+g. Configure Security Group - create a new security group for the two nodes to be in. Remember your new security group name (e.g. dpsgd-secgroup) which will be used later;
   
-h. Review Instance Launch - Here, review the instance then launch it. By default, this will automatically start initializing the two instances. You can monitor the initialization progress from the dashboard.
+h. Review Instance Launch - review the instance then launch it; 
+
+i. Go to "Security Groups" and edit the rules for the security group you created at step g:
+
+- Inbound Rules: add rule that allow all traffics as Source.
+- Outbound Rules: Same as inbound.
 
 **2. Environment Setup**
   
-a. activate the pytorch environment: `source activate pytorch_p36`;
+a. Activate the pytorch environment: `source activate pytorch_p36`;
   
 b. Install the latest Pytorch 1.1: `conda install pytorch cudatoolkit=10.0 -c pytorch`;
   
 c. Find the name of private IP of the node by running `ifconfig` (usually `ens3`) and export it to NCLL socket: `export NCCL_SOCKET_IFNAME=ens3` (add to `.bashrc` to make this change permanent);
   
-d. Upload the scripts to each node or `git clone` from the repository;
+d. Upload code files to each node, or simply `git clone` from the repository;
   
 e. Also, upload the data to each node if running without NFS (Network File System) setup;
   
@@ -139,7 +144,7 @@ f. Repeat above steps on each node.
 
 **3. Set up NFS**
 
-Let `master$` denote master node and `$node` denote any other nodes.
+We use `master$` denote master node and `$node` denote any other nodes.
   
 Run the following commands on master node:
   
@@ -159,7 +164,7 @@ b. Create NFS directory: `node$ mkdir cloud`;
   
 c. Mount the shared directory: `node$ sudo mount -t nfs <Master Node Private IP>:/home/ubuntu/cloud /home/ubuntu/cloud`;
   
-d. Make the mount permanent (optional): add the following line `<Master Noder Private>:/home/ubuntu/cloud /home/ubuntu/cloud nfs` to `/etc/fstab` by executing `node$ sudo bi /etc/fstab`.
+d. Make the mount permanent (optional): add the following line `<Master Node Private IP>:/home/ubuntu/cloud /home/ubuntu/cloud nfs` to `/etc/fstab` by executing `node$ sudo vi /etc/fstab`.
 
 ### Running the Program
 
@@ -168,7 +173,7 @@ d. Make the mount permanent (optional): add the following line `<Master Noder Pr
 
 **2. Runnng the sequential version of DPSGD**
 
-We use json file to load training parameters. 
+We use json file to store and load training parameters. 
 
 Run the following command on one node:
 ```
@@ -245,13 +250,15 @@ Note that here the local rank of this process is 0 since this process only sees 
 ### Software Version
 - Python 3.6.5
 - PyTorch 1.1.0
+- Operating System: 
 
 ### CUDA GPU Information
 
 ![cudainfo](reproduction-cudainfo.png)
 
-### AWS Instance Information
+### AWS Instance Information (g3.4xlarge)
 
+![g34xlarge](g34xlarge.png)
 
 
 
