@@ -5,8 +5,8 @@ Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepa
 ## Table of Contents
 1. [Data and Preprocessing](#data-and-preprocessing)
   * [Data Description](#data-description)
-  * [Data Overview](#sequential-version)
-  * [Parallelization: MapReduce vs Spark?](#parallelized-version)
+  * [Data Overview](#data-overview)
+  * [Parallelization: MapReduce vs Spark?](#parallelization-mapreduce-vs-spark)
 2. [Model Training](#model-training)
   * [Neural Network Architecture](#neural-network-architecture)
   * [Differential Private Stochastic Gradient Descent](#differential-private-stochastic-gradient-descent)
