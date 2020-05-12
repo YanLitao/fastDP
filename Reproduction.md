@@ -173,7 +173,7 @@ d. Make the mount permanent (optional): add the following line `<Master Node Pri
 
 **2. Runnng the sequential version of DPSGD**
 
-We use json file to load training parameters. 
+We use json file to store and load training parameters. 
 
 Run the following command on one node:
 ```
@@ -250,13 +250,15 @@ Note that here the local rank of this process is 0 since this process only sees 
 ### Software Version
 - Python 3.6.5
 - PyTorch 1.1.0
+- Operating System: 
 
 ### CUDA GPU Information
 
 ![cudainfo](reproduction-cudainfo.png)
 
-### AWS Instance Information
+### AWS Instance Information (g3.4xlarge)
 
+![g34xlarge](g34xlarge.png)
 
 
 
