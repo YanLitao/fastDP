@@ -36,7 +36,7 @@ b. Click on “Create Cluster” and wait for the cluster to be ready. The clust
    
 **2. Submit a MapReduce job**
 
-a. Upload `mapper.py`, `reducer.py` and raw dataset `Ca5PUMS.csv` to a new S3 bucket. Create a S3 bucket, and name it.
+a. Upload `mapper.py`, `reducer.py` and raw dataset `CaPUMS5full.csv` to a new S3 bucket. Create a S3 bucket, and name it.
     
 b. Go to the Hadoop cluster dashboard’s **Steps** tab and click on “Add Step” with the following configuration:
     
@@ -89,11 +89,11 @@ b. SSH to the machine using the private key. A sample command is as depicted (mo
 
 **3. Submit a Spark Script** 
     
-a. Upload to the master VM the Spark `process_spark.py` script and the `Ca5PUMS.csv` file;
+a. Upload to the master VM the Spark `process_spark.py` script and the `CaPUMS5full.csv` file;
     
-b. Upload the `Ca5PUMS.csv` file to the Hadoop file system: 
+b. Upload the `CaPUMS5full.csv` file to the Hadoop file system: 
         
-`$ hadoop fs -put Ca5PUMS.csv`
+`$ hadoop fs -put CaPUMS5full.csv`
         
 **4. Parallel Execution on Multiple Nodes**
 
