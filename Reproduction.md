@@ -20,7 +20,7 @@ Click <a href="https://yanlitao.github.io/fastDP">here</a> to go back to Homepag
 
 a. login **AWS EMR** and select **Create cluster**. You can select the following configuration:
     
-	ClusterName: MySpark
+	ClusterName: MyMapReduce
         
 	Launch mode “Cluster”
         
