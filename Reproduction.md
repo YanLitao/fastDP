@@ -136,7 +136,7 @@ b. Install the latest Pytorch 1.1: `conda install pytorch cudatoolkit=10.0 -c py
   
 c. Find the name of private IP of the node by running `ifconfig` (usually `ens3`) and export it to NCLL socket: `export NCCL_SOCKET_IFNAME=ens3` (add to `.bashrc` to make this change permanent);
   
-d. Upload the scripts to each node or `git clone` from the repository;
+d. Upload code files to each node, or simply `git clone` from the repository;
   
 e. Also, upload the data to each node if running without NFS (Network File System) setup;
   
@@ -144,7 +144,7 @@ f. Repeat above steps on each node.
 
 **3. Set up NFS**
 
-Let `master$` denote master node and `$node` denote any other nodes.
+We use `master$` denote master node and `$node` denote any other nodes.
   
 Run the following commands on master node:
   
@@ -164,7 +164,7 @@ b. Create NFS directory: `node$ mkdir cloud`;
   
 c. Mount the shared directory: `node$ sudo mount -t nfs <Master Node Private IP>:/home/ubuntu/cloud /home/ubuntu/cloud`;
   
-d. Make the mount permanent (optional): add the following line `<Master Noder Private>:/home/ubuntu/cloud /home/ubuntu/cloud nfs` to `/etc/fstab` by executing `node$ sudo bi /etc/fstab`.
+d. Make the mount permanent (optional): add the following line `<Master Node Private IP>:/home/ubuntu/cloud /home/ubuntu/cloud nfs` to `/etc/fstab` by executing `node$ sudo vi /etc/fstab`.
 
 ### Running the Program
 
