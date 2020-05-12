@@ -26,7 +26,7 @@ a. login **AWS EMR** and select **Create cluster**. You can select the following
         
 	Release: 5.29.0
         
-	Applications: Spark
+	Applications: Core Hadoop
         
 	Instance type: m4.xlarge
         
@@ -36,7 +36,7 @@ b. Click on “Create Cluster” and wait for the cluster to be ready. The clust
    
 **2. Submit a MapReduce job**
 
-a. Upload `mapper.py`, `reducer.py` and `input.py` files to a new S3 bucket. Create a S3 bucket, and name it.
+a. Upload `mapper.py`, `reducer.py` and raw dataset `Ca5PUMS.csv` to a new S3 bucket. Create a S3 bucket, and name it.
     
 b. Go to the Hadoop cluster dashboard’s **Steps** tab and click on “Add Step” with the following configuration:
     
@@ -48,7 +48,7 @@ b. Go to the Hadoop cluster dashboard’s **Steps** tab and click on “Add Step
         
 	Reducer: Complete path to uploaded reducer
         
-	Input: Complete path to uploaded input
+	Input: Complete path to uploaded input files
         
 	Output: Complete path to new folder to be created with the output (it should not exist)
      
@@ -97,9 +97,9 @@ b. Upload the `Ca5PUMS.csv` file to the Hadoop file system:
         
 **4. Parallel Execution on Multiple Nodes**
 
-a. Using the following command to execute the script on **2 executors** (worker nodes) with **4 threads per executor**, achieving the execution of **8 simultaneous tasks**:
+a. Using the following command to execute the script on **1 executors** (worker nodes) with **4 threads per executor**, achieving the execution of **4 simultaneous tasks**:
     
-`$ spark-submit --num-executors 2 --executor-cores 4 process_spark.py`
+`$ spark-submit --num-executors 1 --executor-cores 4 process_spark.py`
 
 ## Distributed DPSGD with GPU acceleration
 
