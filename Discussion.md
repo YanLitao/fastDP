@@ -45,3 +45,9 @@ Ring All-Reduce is the current state-of-art and is a very elegant example which 
 Zhao, H. and Canny, J., 2013. Sparse allreduce: Efficient scalable communication for power-law data. arXiv preprint arXiv:1312.3020.
 
 Garcia, E., 2019. Visual intuition on ring-Allreduce for distributed Deep Learning. https://towardsdatascience.com/visual-intuition-on-ring-allreduce-for-distributed-deep-learning-d1f34b4911da
+
+Abadi, M., Chu, A., Goodfellow, I., McMahan, H.B., Mironov, I., Talwar, K. and Zhang, L., 2016, October. Deep learning with differential privacy. In Proceedings of the 2016 ACM SIGSAC Conference on Computer and Communications Security (pp. 308-318).
+
+Arnold, S., 2016. An Introduction to Distributed Deep Learning.
+
+Mao, L., 2019. Data Parallelism VS Model Parallelism in Distributed Deep Learning Training [Online]. Available at: https://leimao.github.io/blog/Data-Parallelism-vs-Model-Paralelism/(Accessed: 11 May 2020).
