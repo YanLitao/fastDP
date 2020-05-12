@@ -51,3 +51,7 @@ Abadi, M., Chu, A., Goodfellow, I., McMahan, H.B., Mironov, I., Talwar, K. and Z
 Arnold, S., 2016. An Introduction to Distributed Deep Learning.
 
 Mao, L., 2019. Data Parallelism VS Model Parallelism in Distributed Deep Learning Training [Online]. Available at: https://leimao.github.io/blog/Data-Parallelism-vs-Model-Paralelism/(Accessed: 11 May 2020).
+
+Tobin, D., 2019. Spark vs. Hadoop MapReduce. https://www.xplenty.com/blog/apache-spark-vs-hadoop-mapreduce
+
+
