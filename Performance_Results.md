@@ -11,7 +11,7 @@ Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepa
   * [Code Baseline](#code-baseline)
   * [Experiment with Different Number of GPUs](#experiment-with-different-number-of-gpus)
   * [Experiment with Different Distributations of GPUs](#experiment-with-different-distributations-of-gpus)
-  * [Money Tradeoff](#money-tradeoff)
+  * [Money-Efficiency Tradeoff](#money-efficiency-tradeoff)
 
 ## Metrics of Performance
 
@@ -98,13 +98,15 @@ Since we are using strong scaling to measure distributed training speedup, each 
 
 ![different number gpu scratch](re3.png)
 
-As we can see, Version 2 of the distributed training program achieves  similar and sometimes even better performance than the Version 1 (package version) of the data. Given the fact that `DistributedDataParallel` module is an official, well-tested and well-optimized version, this shows that our implementation of AllReduce algorithm is a success and has great scalability. 
+As we can see, Version 2 of the distributed training program achieves  similar and sometimes even better performance than the Version 1 (package version) of the data. Given the fact that `DistributedDataParallel` module is an official, well-tested and well-optimized version, this shows that our own implementation of AllReduce algorithm is a success and has great scalability. 
 
 ### Experiment with Different Distributations of GPUs
+We also experimented our implementation when the total number of GPUs is fixed but distributed on different nodes. Specifically, with total 4 GPUs, we train the model on 1 node with 4 GPUs (1 g3.16xlarge instance), 2 nodes with 2 GPUs (2 g3.8xlarge instance, each only use 2 GPUs) and 4 nodes with 1 GPUs (1 g3.4xlarge instance). The results are shown in the following tables and figures:
  
- **package version:**
  
- | \# of Nodes                | \# GPUs per Node | Max time \(s/epoch\) | Average time \(s/epoch\) | Min time \(s/epoch\) | Test Acc |
+ **Code Version 1 (package version)**
+ 
+| \# of Nodes                | \# GPUs per Node | Max time \(s/epoch\) | Average time \(s/epoch\) | Min time \(s/epoch\) | Test Acc |
 |----------------------------|--------------|--------------|--------------|--------------|--------------|
 | 4\*g3\.4xlarge \(1 GPU\)   | 1                | 191\.8               | 190\.3                   | 189\.3               | 0\.615   |
 | 2\*g3\.8xlarge \(2 GPUs\)  | 2                | 176\.8               | 173\.05                  | 174\.9               | 0\.615   |
@@ -112,7 +114,9 @@ As we can see, Version 2 of the distributed training program achieves  similar a
 
 ![different distributations gpu package](re4.png)
 
-**scratch version:**
+The clusters achieve approximately the same speedup, while the node with 4 GPU builtin achieves the best performance. We think this is mainly because it has only intra-node communication which is lower than internode communication overhead.
+
+**Code Version 2 (scratch version)**
 
 | \# of Nodes                | \# GPUs per Node | Max time \(s/epoch\) | Average time \(s/epoch\) | Min time \(s/epoch\) | Test Acc |
 |----------------------------|--------------|--------------|--------------|--------------|--------------|
@@ -122,10 +126,9 @@ As we can see, Version 2 of the distributed training program achieves  similar a
 
 ![different distributations gpu scratch](re5.png)
 
-**analysis:**
-We also tried out different distributions of GPU clusters with 4 GPUs within each. The clusters achieve approximately the same speedup, while the node with 4 GPU builtin achieves the best performance. We think this is mainly because it has only intra-node communication which is lower than internode communication overhead.
+For Code Version 2 (scratch version), we find that the performance is worse than Code Version 1 for 4*g3.4xlarge's case. We suspect that this is because our version of code is not fully optimized for inter-node communication, which can be an interesting future work. 
 
-### Money Tradeoff
+### Money-Efficiency Tradeoff
 
 | Experiment      | \# GPU | Time \(s\) | price / hour | Cost   |
 |-----------------|--------|------------|--------------|--------|
@@ -135,7 +138,6 @@ We also tried out different distributions of GPU clusters with 4 GPUs within eac
 | 4\*g3\.4xlarge  | 4      | 2144       | 4\.56        | 2\.72  |
 | 2\*g3\.8xlarge  | 4      | 1937       | 4\.56        | 2\.45  |
 
-**analysis:**
-g3.4x large is the cheapest instance among all GPU’s, but it is also pretty slow compared to multi-GPU clusters.
-g3.16x large is the fastest one among all distributed GPU cluster’s, as it only has intra-node communication which is lower than inter-node communication overhead.
-Hence, in our case the single node GPUs are usually best money for value given the lower overhead involved. So, you can go for any single node multi GPUs for the best combination of speed and price.
+g3.4xlarge is the cheapest instance among all AWS clusters that has GPU device, but it is also pretty slow compared to multi-GPU clusters.
+g3.16xlarge is the fastest one among all GPU instances, as it only has intra-node communication which is much faster than inter-node communication, which is very significant in distributed training.
+Hence, in our case the single node GPUs are usually best money for value given the lower overhead involved. So, we conclude that one can go for any single node multi GPUs for the best combination of speed and price.
