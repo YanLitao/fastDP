@@ -5,10 +5,11 @@ Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepa
 ## Table of Contents
 1. [Goals Achieved](#goals-achieved)
   * [Data Processing](#data-processing)
-  * [Distributed Computing](#distributed-computing)
+  * [Distributed DPSGD](#distributed-dpsgd)
 2. [Future Work](#future-work)
   * [Advanced All-Reduce algorithms](#advanced-all-reduce-algorithms)
   * [Ring All-Reduce](#ring-all-reduce)
+3. [References](#references)
 
 ## Goals Achieved
 
