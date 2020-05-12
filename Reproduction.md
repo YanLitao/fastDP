@@ -263,7 +263,6 @@ Note that here the local rank of this process is 0 since this process only sees 
 ### Software Version
 - Python 3.6.5
 - PyTorch 1.1.0
-- Operating System: 
 
 ### CUDA GPU Information
 
@@ -272,6 +271,10 @@ Note that here the local rank of this process is 0 since this process only sees 
 ### AWS Instance Information (g3.4xlarge)
 
 ![g34xlarge](g34xlarge.png)
+
+### Operating System 
+
+![OS](os.png)
 
 
 
