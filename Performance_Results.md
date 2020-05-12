@@ -9,8 +9,8 @@ Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepa
   * [Distributed DPSGD](#distributed-dpsgd)
 3. [Distributed DPSGD](#distributed-dpsgd)
   * [Code Baseline](#code-baseline)
-  * [Experiment with Different Number of GPU](#experiment-with-different-number-of-gpu)
-  * [Experiment with Different Distributations of GPU](#experiment-with-different-distributations-of-gpu)
+  * [Experiment with Different Number of GPUs](#experiment-with-different-number-of-gpus)
+  * [Experiment with Different Distributations of GPUs](#experiment-with-different-distributations-of-gpus)
   * [Money Tradeoff](#money-tradeoff)
 
 ## Metrics of Performance
@@ -56,12 +56,10 @@ Another experiment detail we would like to mention is our way to benchmark a dis
 
 ### Code Baseline
 
-Original SGD vs Original DPSGD:
-Compared to the original SGD, DPSGD could achieve approximately similar testing accuracy in terms of prediction. The runtime of DPSGD is significantly slower than the original one, and the bottleneck of the algorithm is mainly the minibatch_step in backpropagation. However, the upside of using this optimizer is we could better protect the privacy of data while training the model. Here we have demonstrated that by using DPSGD, the model can better protect training data from model inversion attack1 by lowering the attacker’s accuracy.
+**Original SGD vs Original DPSGD**
+Compared to the original SGD, DPSGD could achieve approximately similar test accuracy in terms of prediction. The runtime of DPSGD is significantly slower than the original one, and the bottleneck of the algorithm is mainly the gradient clipping and noise addition in backpropagation, as shown in the code profiling below. However, the upside of using this optimizer is we could better protect the privacy of data while training the model. Here we have demonstrated that by using DPSGD, the model can better protect training data from model inversion attack1 by lowering the attacker’s accuracy.
 
-Model inversion attack is a famous privacy attack against machine learning models. The access to a model is abused to infer information about the training data, which raised serious concerns given that training data usually contain privacy sensitive information. We use the success rate of model inversion attack as the criteria for the effectiveness of DP training.
-
- **Profiling Results**
+Model inversion attack is a famous privacy attack against machine learning models, which is first proposed by [[Fredrikson et al.]](https://www.usenix.org/node/184490). The access to a model is abused to infer information about the training data, which raised serious concerns given that training data usually contain privacy sensitive information. We use the success rate of model inversion attack as the benchmark for the effectiveness of DP training.
 
 | Algorithm        | Max time \(s\) | average time \(s\) | Min time \(s\) | Test Acc  | Model Inversion Attack Acc |
 |------------------|----------------|--------------------|----------------|-----------|----------------------------|
@@ -70,9 +68,15 @@ Model inversion attack is a famous privacy attack against machine learning model
 
 ![baseline performance](re1.png)
 
-### Experiment with Different Number of GPU
+**Code Profiling Results**
+
+![profiling](performance-profiling-baseline.png)
+
+### Experiment with Different Number of GPUs
+In order to measure the **strong scalability** of our distributed training model, we run our two version of programs on the dataset with different number of GPUs. Specifically, we tried 1 GPU (1 g3.4xlarge instances), 2 GPUs (2 g3.4xlarge instances), 4 GPUs (4 g3.4xlarge instances). The results are shown in the following tables and figures. 
  
- **package version:**
+ 
+ **Code Version 1 (package version)**
 
 | \# of Nodes     | \# GPUs per Node | Max time \(s/epoch\) | Average time \(s/epoch\) | Min time \(s/epoch\) | Test Acc |
 |-----------------|------------------|----------------------|--------------------------|----------------------|----------|
@@ -82,7 +86,9 @@ Model inversion attack is a famous privacy attack against machine learning model
 
 ![different number gpu package](re2.png)
 
-**scratch version:**
+Since we are using strong scaling to measure distributed training speedup, each GPU will handle a smaller part of data as the number of GPU increases. From above we can see that the time of each epoch decreases is almost proportional to the number of GPU increases. We note that it's not perfectly linear speedup because of data partition and communication overheads.
+
+**Code Version 2 (scratch version)**
 
 | \# of Nodes     | \# GPUs per Node | Max time \(s/epoch\) | Average time \(s/epoch\) | Min time \(s/epoch\) | Test Acc |
 |-----------------|------------------|----------------------|--------------------------|----------------------|----------|
@@ -92,10 +98,9 @@ Model inversion attack is a famous privacy attack against machine learning model
 
 ![different number gpu scratch](re3.png)
 
-**analysis:**
-Since we are using strong scaling to calculate GPU speedup, each GPU will handle a smaller part of data as the number of GPU increases. Here we can see that the time of each epoch decreases is almost proportional to the number of GPU increases. However, we haven’t achieved ideally linear speedup because of data partition and communication overheads.
+As we can see, Version 2 of the distributed training program achieves  similar and sometimes even better performance than the Version 1 (package version) of the data. Given the fact that `DistributedDataParallel` module is an official, well-tested and well-optimized version, this shows that our implementation of AllReduce algorithm is a success and has great scalability. 
 
-### Experiment with Different Distributations of GPU
+### Experiment with Different Distributations of GPUs
  
  **package version:**
  
