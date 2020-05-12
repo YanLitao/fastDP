@@ -33,4 +33,4 @@ In terms of the infrastructure, since we didn't get approve from AWS to get more
 - [Discussion](http://YanLitao.github.io/fastDP/Discussion)
 
 ## Acknowledge
-
+When we did this project, we got lots of help from our TFs: Dylan Randle, Hayoun Oh, Zhiying Xu, and Zijie Zhao and our Instructor David Sondak. We would like to thank you for your time and kindness during this special time, and express our deepest appreciation to your help. 
