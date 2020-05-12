@@ -7,6 +7,8 @@ Click <a href="https://yanlitao.github.io/fastDP">here</a> to go back to Homepag
   * [MapReduce](#mapreduce)
   * [Spark](#spark)
 2. [Distributed DPSGD with GPU acceleration](#distributed-dpsgd-with-gpu-acceleration)
+  * [Infrastructure Deploying & Environment Setup](#infrastructure-deploying--environment-setup)
+  * [Running the Program](#running-the-program)
 3. [System Information](#system-information)
   * [Software Version](#software-version)
   * [CUDA GPU Information](#cuda-gpu-information)
