@@ -1,4 +1,4 @@
-# Reproduction
+# Replicability Information
 
 Click <a href="https://yanlitao.github.io/fastDP">here</a> to go back to Homepage.
 
