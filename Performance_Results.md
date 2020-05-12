@@ -41,6 +41,14 @@ Another experiment detail we would like to mention is our way to benchmark a dis
 | 25%                        | 17\.579s        | 114s         | 68s          | 44s          |
 | 100%                       | 78\.52s         | 126s         | 76s          | 48s          |
  
+ ![](mr-1k.png) |  ![](mr-2.png) | ![](mr-3.png)
+:-------------------------:|:-------------------------:-------------------------:
+ Speed-up with 1% data using MapReduce|Speed-up with 25% data using MapReduce|Speed-up with 100% data using MapReduce
+ 
+**analysis:**
+The table shows that the sequential data processing code is even more efficient in most cases than using MapReduce, especially when the dataset is small. Only when we process full dataset with more than 2 cores does MapReduce show its power. This is because MapReduce contains many extra steps such as splitting and sorting which is only suitable for large data that does not even able to fit into RAM. Using MapReduce with multiple cores can help us decrease the running time, and we can observe almost linear speedups with it.
+
+
 ### Spark Data Processing
  * Overhead Analysis
 
@@ -50,7 +58,10 @@ Another experiment detail we would like to mention is our way to benchmark a dis
 |----------------------------|-----------------|----------|-----------|------------|------------|
 | 100%                       | 78\.52s         | 6\.3429s | 3\.61228s | 3\.587001s | 4\.185391s |
 
- * Strong scaling, weak scaling 
+ ![Speed-up with 100% data using Spark](spark.png)
+ 
+ **analysis:**
+ Compared to MapReduce, Spark runs much faster. The speedup is more than 20 when we use 2 or 3 cores. Also, the figure implies that it is not wise to use more than 2 cores for our dataset because using more cores might get even worse performance due to the excessive parallelization. So the best option for data processing might be Spark with 2 cores. However, this result is dependent on the hardware conditions. Since we used a m4.xlarge instance that has 4 cores but only two physical working cores, when we increased the number of core to 3 or 4, some time was taken by context switching rather than computing. Thus the speedup of 4 cores is smaller than 2 or 3 cores.
 
 ## Distributed DPSGD
 
