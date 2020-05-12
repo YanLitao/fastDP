@@ -136,13 +136,15 @@ a. Activate the pytorch environment: `source activate pytorch_p36`;
   
 b. Install the latest Pytorch 1.1: `conda install pytorch cudatoolkit=10.0 -c pytorch`;
   
-c. Find the name of private IP of the node by running `ifconfig` (usually `ens3`) and export it to NCLL socket: `export NCCL_SOCKET_IFNAME=ens3` (add to `.bashrc` to make this change permanent);
+c. Install h5py `pip install h5py`.
   
-d. Upload code files to each node, or simply `git clone` from the repository;
+d. Find the name of private IP of the node by running `ifconfig` (usually `ens3`) and export it to NCLL socket: `export NCCL_SOCKET_IFNAME=ens3` (add to `.bashrc` to make this change permanent);
   
-e. Also, upload the data to each node if running without NFS (Network File System) setup;
+e. Upload code files to each node, or simply `git clone` from the repository;
   
-f. Repeat above steps on each node.
+f. Also, upload the data to each node if running without NFS (Network File System) setup;
+  
+g. Repeat above steps on each node.
 
 **3. Set up NFS**
 
