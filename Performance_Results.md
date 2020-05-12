@@ -152,3 +152,5 @@ For Code Version 2 (scratch version), we find that the performance is worse than
 g3.4xlarge is the cheapest instance among all AWS clusters that has GPU device, but it is also pretty slow compared to multi-GPU clusters.
 g3.16xlarge is the fastest one among all GPU instances, as it only has intra-node communication which is much faster than inter-node communication, which is very significant in distributed training.
 Hence, in our case the single node GPUs are usually best money for value given the lower overhead involved. So, we conclude that one can go for any single node multi GPUs for the best combination of speed and price.
+
+Click <a href="https://yanlitao.github.io/fastDP/Discussion">here</a> to see our discussion.
