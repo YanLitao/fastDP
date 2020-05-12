@@ -42,7 +42,7 @@ Another experiment detail we would like to mention is our way to benchmark a dis
 | 100%                       | 78\.52s         | 126s         | 76s          | 48s          |
  
 |![](mr-1.png) |  ![](mr-2.png) | ![](mr-3.png)|
-|:-------------------------:|:-------------------------:-------------------------:|
+|:-------------------------:|:-------------------------:|:-------------------------:|
 |Speed-up with 1% data using MapReduce|Speed-up with 25% data using MapReduce|Speed-up with 100% data using MapReduce|
  
 **analysis:**
