@@ -18,11 +18,18 @@ Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepa
 ## Data and Preprocessing
 
 ### Data Description
+
 Since a typical application of DPSGD is to work with sensitive data, we decided to choose a dataset which contains sensitive information but it is impossible to identify individual from the dataset.
+
 Our data comes from American Community Survey Public Use Microdata Sample (PUMS) files. PUMS files are perfect for people, especially for students, who are looking for greater accessibility to inexpensive data for research projects. It includes useful but somehow sensitive census information such as Sex, Married Status, College degree. PUMS records do not contain names, addresses or any information that can identify a specific housing unit, group, or person.
 
 ### Data Overview
+
 The figure below shows the format of our dataset. Our data has over 1 million records and 10 features in total. Our objective is to use this data to train a deep learning model to predict the unemployment rate based on other demographic information using DPSGD and HPC and HTC tools so that we can both protect privacy and obtain a satisfiable runtime of the algorithm.
+
+![](dp.png)
+
+![](dp-1.png)
 
 From the above figure, we can see that the dataset is imbalanced. Since we have enough data and prediction accuracy is good in our pilot experiment, we did not modify data to much and focused on the improvement of running time and parallelization.
 
