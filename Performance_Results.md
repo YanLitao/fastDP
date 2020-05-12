@@ -5,8 +5,8 @@ Click <a href="https://yanlitao.github.io/fastDP/">here</a> to go back to Homepa
 ## Table of Contents
 1. [Metrics of Performance](#metrics-of-performance)
 2. [Data Preprocessing](#data-preprocessing)
-  * [MapReduce Data Processing](#spark-data-processing)
-  * [Spark Data Processing](#distributed-dpsgd)
+  * [MapReduce Data Processing](#mapreduce-data-processing)
+  * [Spark Data Processing](#spark-data-processing)
 3. [Distributed DPSGD](#distributed-dpsgd)
   * [Code Baseline](#code-baseline)
   * [Experiment with Different Number of GPUs](#experiment-with-different-number-of-gpus)
