@@ -41,7 +41,7 @@ Another experiment detail we would like to mention is our way to benchmark a dis
 | 25%                        | 17\.579s        | 114s         | 68s          | 44s          |
 | 100%                       | 78\.52s         | 126s         | 76s          | 48s          |
  
-|![](mr-1.png) |  ![](mr-2.png) | ![](mr-3.png)|
+| ![](mr-1.png) |  ![](mr-2.png) | ![](mr-3.png)|
 |:-------------------------:|:-------------------------:|:-------------------------:|
 |Speed-up with 1% data using MapReduce|Speed-up with 25% data using MapReduce|Speed-up with 100% data using MapReduce|
  
@@ -50,7 +50,6 @@ The table shows that the sequential data processing code is even more efficient 
 
 
 ### Spark Data Processing
- * Overhead Analysis
 
  * Results
 
