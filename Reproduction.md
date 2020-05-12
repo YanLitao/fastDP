@@ -89,7 +89,7 @@ b. SSH to the machine using the private key. A sample command is as depicted (mo
 
 **3. Submit a Spark Script** 
     
-a. Upload to the master VM the Spark `process_spark.py` script and the `CaPUMS5full.csv` file;
+a. Upload to the master VM the Spark `spark_process.py` script and the `CaPUMS5full.csv` file;
     
 b. Upload the `CaPUMS5full.csv` file to the Hadoop file system: 
         
@@ -99,7 +99,7 @@ b. Upload the `CaPUMS5full.csv` file to the Hadoop file system:
 
 a. Using the following command to execute the script on **1 executors** (worker nodes) with **4 threads per executor**, achieving the execution of **4 simultaneous tasks**:
     
-`$ spark-submit --num-executors 1 --executor-cores 4 process_spark.py`
+`$ spark-submit --num-executors 1 --executor-cores 4 spark_process.py`
 
 ## Distributed DPSGD with GPU acceleration
 
